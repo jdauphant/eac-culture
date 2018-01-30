@@ -20,20 +20,28 @@
     background-repeat: no-repeat;
 }
 
-
 .header__avatar {
     background: rgba(103, 182, 235, 1);
-    background-image: url("images/icons/male-user-filled-50.png");
+    background-image: url("images/icons/male-user-filled-50.png") !important;
+}
+
+.header__avatar:hover {
+    background: rgb(89, 157, 202);
 }
 
 .header__favorites {
-    background: rgb(255, 251, 28);
-    background-image: url("images/icons/star-filled-50.png");
+    background: rgb(238, 231, 31);
+    background-image: url("images/icons/star-filled-50.png") !important;
 }
 
+.header__favorites:hover {
+    background: rgb(255, 251, 28);
+}
+
+
 .header__avatar, .header__favorites {
-    background-repeat: no-repeat;
-    background-position: center;
+    background-repeat: no-repeat !important;
+    background-position: center !important;
     height: 100%;
     width: 70px;
     float: right;
