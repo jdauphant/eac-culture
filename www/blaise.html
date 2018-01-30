@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html>
+<head>
+   <title>Sorties Blaise Pascal</title>
+
+   <meta charset="utf-8" />
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.1/dist/leaflet.css" />
+   <link rel="stylesheet" href="https://rawgit.com/Leaflet/Leaflet.markercluster/v1.2.0/dist/MarkerCluster.css" />
+   <link rel="stylesheet" href="https://rawgit.com/Leaflet/Leaflet.markercluster/v1.2.0/dist/MarkerCluster.Default.css" />
+   <link rel="stylesheet" href="https://cdn.rawgit.com/Pixabay/JavaScript-autoComplete/1.0.4/auto-complete.css" />
+   <link rel="stylesheet" href="https://opensource.keycdn.com/fontawesome/4.7.0/font-awesome.min.css" integrity="sha384-dNpIIXE8U05kAbPhy3G1cz+yZmTzA6CY8Vg/u2L9xRnHjJiAK76m2BIEaSEV+/aU" crossorigin="anonymous">
+   <script src="https://unpkg.com/leaflet@1.3.1/dist/leaflet.js"></script>
+   <script src="https://rawgit.com/Leaflet/Leaflet.markercluster/v1.2.0/dist/leaflet.markercluster.js"></script>
+   <script src="https://cdn.rawgit.com/Pixabay/JavaScript-autoComplete/1.0.4/auto-complete.min.js"></script>
+   <style type="text/css">
+       html, body { 
+           height: 100%; 
+           margin: 0; 
+           padding: 0;
+       }
+       #map {
+           height: 100%;
+           display: block;
+       }
+       .address {
+           width: 300px;
+           position: absolute;
+           padding: 5px;
+           top: 10px;
+           left: 55px;
+       }
+
+       .icon__label {
+           border-width: 3px;
+           border-radius: 15px;
+           text-align: center;
+           font-weight: bold; 
+           border: 1px solid #666;
+           background-color: white;
+       }
+       .icon__label--red {
+           background-color: rgba(222, 27, 27, 0.7);
+       }
+       .icon__label--orange {
+           background-color: rgba(217, 133, 59, 0.7);
+       }
+       .icon__label--green {
+           background-color: rgba(168, 205, 27, 0.9);
+       }
+       .icon__label--no-border {
+            border: none;
+       }
+       .icon__label--small {
+            font-size: 0;
+            opacity: 0.9;
+       }
+   </style>
+
+</head>
+
+<body>
+<div id="map">
+</div>
+<script>
+   var center = { lat: 47.398659, lng: 2.195567 };
+
+// Map
+   var map = L.map('map', {
+       drawControl: true,
+       center: center,
+       zoom: 6,
+       minZoom: 6
+   });
+
+   L.tileLayer(
+    'http://{s}.tile.openstreetmap.fr/openriverboatmap/{z}/{x}/{y}.png', {
+    attribution: '&copy; <a href="http://openstreetmap.org">OpenStreetMap</a> Contributors & <a href="http://openstreetmap.fr/">OSM FR</a>',
+    maxZoom: 18,
+    }).addTo(map);
+
+   var activitesRequest = new XMLHttpRequest();
+   activitesRequest.open('GET', 'blaise-pascal.json', true); 
+   activitesRequest.onload = function() {
+   if (activitesRequest.status >= 200 && activitesRequest.status < 400) {
+       // Success!
+       var data = JSON.parse(activitesRequest.responseText);
+      
+       L.geoJson(data, {
+                           pointToLayer: function(geoJson, latlng) {
+                                var marker;
+                                if(geoJson["properties"]["lib_nature"] == "COLLEGE") {
+                                    var icon = L.divIcon({
+                                        html: "C", 
+                                        className: 'icon__label icon__label--green',
+                                        iconSize: [18,18]
+                                    });
+                                    marker = L.marker(latlng, {icon: icon});
+                                } else if(geoJson["properties"]["type"] == "THEATRE" ) {
+                                    var icon = L.divIcon({
+                                        html: "<img src='images/icons/theatre-mask-filled-50.png' style='width: 70%; margin: 15%;'>", 
+                                        className: 'icon__label icon__label--no-border',
+                                        iconSize: [25,25]
+                                    });
+                                    marker = L.marker(latlng, {icon: icon});
+                                } else if(geoJson["properties"]["type"] == "CINEMA" ) {
+                                    var icon = L.divIcon({
+                                        html: "<img src='images/icons/movie-filled-50.png' style='width: 70%; margin: 15%;'>", 
+                                        className: 'icon__label icon__label--no-border',
+                                        iconSize: [25,25]
+                                    });
+                                    marker = L.marker(latlng, {icon: icon});
+                                } else if(geoJson["properties"]["nom_du_musee"] != undefined ) {
+                                    var icon = L.divIcon({
+                                        html: "<img src='images/icons/museum-filled-50.png' style='width: 70%; margin: 15%;'>", 
+                                        className: 'icon__label icon__label--no-border',
+                                        iconSize: [25,25]
+                                    });
+                                    marker = L.marker(latlng, {icon: icon});
+                                } else {
+                                    marker = L.marker(latlng);
+                                }
+                               try { 
+                                     marker.bindPopup("<b>"+geoJson["properties"]["courses"][0]["companieName"]+"</b> <br> "+geoJson["properties"]["courses"][0]["title"]);
+                                } catch(e){
+                                    if(geoJson["properties"]["nom_du_musee"] != undefined) {
+                                        marker.bindPopup("<b>"+geoJson["properties"]["nom_du_musee"]+"</b>");
+                                    } else if(geoJson["properties"]["name"] != undefined) {
+                                        marker.bindPopup("<b>"+geoJson["properties"]["name"]+"</b>");
+                                    }
+                                }
+                               return marker;
+                           }
+                       })
+       .addTo(map);
+       var center = data["features"][0]["geometry"]["coordinates"];
+       center = center.reverse();
+       var array = Array.from(data["features"]);
+       array.shift();
+       array.forEach(function(element) {
+           var point = element["geometry"]["coordinates"];
+           point = point.reverse();
+           var points = [center,point];
+           var polyline = L.polyline(points, {color: 'blue'}).addTo(map);
+       });
+       map.flyTo(center, 10); 
+   } else {
+   }
+   };
+   activitesRequest.send();
+
+</script>
+</body>
+</html>

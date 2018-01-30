@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html>
+<head>
+   <title>Etablissements Scolaire</title>
+
+   <meta charset="utf-8" />
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.1/dist/leaflet.css" />
+   <link rel="stylesheet" href="https://rawgit.com/Leaflet/Leaflet.markercluster/v1.2.0/dist/MarkerCluster.css" />
+   <link rel="stylesheet" href="https://rawgit.com/Leaflet/Leaflet.markercluster/v1.2.0/dist/MarkerCluster.Default.css" />
+   <link rel="stylesheet" href="https://cdn.rawgit.com/Pixabay/JavaScript-autoComplete/1.0.4/auto-complete.css" />
+   <link rel="stylesheet" href="https://opensource.keycdn.com/fontawesome/4.7.0/font-awesome.min.css" integrity="sha384-dNpIIXE8U05kAbPhy3G1cz+yZmTzA6CY8Vg/u2L9xRnHjJiAK76m2BIEaSEV+/aU" crossorigin="anonymous">
+   <script src="https://unpkg.com/leaflet@1.3.1/dist/leaflet.js"></script>
+   <script src="https://rawgit.com/Leaflet/Leaflet.markercluster/v1.2.0/dist/leaflet.markercluster.js"></script>
+   <script src="https://cdn.rawgit.com/Pixabay/JavaScript-autoComplete/1.0.4/auto-complete.min.js"></script>
+   <style type="text/css">
+       html, body { 
+           height: 100%; 
+           margin: 0; 
+           padding: 0;
+       }
+       #map {
+           height: 100%;
+           display: block;
+       }
+       .address {
+           width: 300px;
+           position: absolute;
+           padding: 5px;
+           top: 10px;
+           left: 55px;
+       }
+
+       .station__label {
+           border-width: 3px;
+           border-radius: 15px;
+           text-align: center;
+           font-weight: bold; 
+           border: 1px solid #666;
+           background-color: white;
+       }
+       .station__label--red {
+           background-color: rgba(222, 27, 27, 0.7);
+       }
+       .station__label--orange {
+           background-color: rgba(217, 133, 59, 0.7);
+       }
+       .station__label--green {
+           background-color: rgba(168, 205, 27, 0.7);
+       }
+       .station__label--small {
+            font-size: 0;
+            opacity: 0.9;
+       }
+   </style>
+
+</head>
+
+<body>
+<div id="map">
+   <input type="text" id="address" name="address" placeholder="Adresse: 1 rue de la paix" class="leaflet-bar leaflet-control address">
+</div>
+<script>
+   var center = { lat: 47.398659, lng: 2.195567 };
+
+// Map
+   var map = L.map('map', {
+       drawControl: true,
+       center: center,
+       zoom: 6,
+       minZoom: 6
+   });
+
+   L.tileLayer(
+       'http://{s}.tile.thunderforest.com/cycle/{z}/{x}/{y}.png?apikey=6d79261d3d014b35835aeb04c8f84e36', {
+       attribution: '&copy; <a href="http://openstreetmap.org">OpenStreetMap</a> Contributors & <a href="http://thunderforest.com/">Thunderforest</a>',
+       maxZoom: 18,
+   }).addTo(map);
+
+// Autocompletion
+   function calculateDistance(lat1, lon1, lat2, lon2) {
+       function toRad(x) {
+           return x * Math.PI / 180;
+        }
+       var R = 6371000; // km
+
+       var x1 = lat2 - lat1;
+       var dLat = toRad(x1);
+       var x2 = lon2 - lon1;
+       var dLon = toRad(x2)
+       var a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+           Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) *
+           Math.sin(dLon / 2) * Math.sin(dLon / 2);
+       var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+       var d = R * c;
+
+       return d;
+   }
+
+   function renderFeature(item, search){
+       var coord = item["geometry"]["coordinates"]
+       return '<div class="autocomplete-suggestion" data-val="' + item["properties"]["label"] + '" data-lat="'+coord[1]+'" data-lng="'+coord[0]+'">' + item["properties"]["label"] + '</div>';
+   }
+
+   function onSelectAddress() {
+       return function(event, term, item){
+           var coord = { lat: item.getAttribute("data-lat"), lng: item.getAttribute("data-lng") };
+           L.marker(coord)
+               .bindPopup(item.getAttribute("data-val"))
+               .addTo(map)
+           map.flyTo(coord, 17);
+       }
+   }
+
+   function addressesDataSource(term, response){
+       try { requestAddresses.abort(); } catch(e){}
+       requestAddresses = new XMLHttpRequest();
+       requestAddresses.open('GET', 'http://api-adresse.data.gouv.fr/search/?q='+term, true);
+       requestAddresses.onload = function() {
+         if (requestAddresses.status >= 200 && requestAddresses.status < 400) {
+           // Success!
+           var data = JSON.parse(requestAddresses.responseText);
+           response(data["features"]);
+         } else {
+           response([]);
+         }
+       };
+       requestAddresses.send();
+   }
+   var requestAddresses;
+
+   new autoComplete({
+       selector: 'input[name=address]',
+       minChars: 4,
+       cache: false,
+       source: addressesDataSource,
+       renderItem: renderFeature,
+       onSelect: onSelectAddress()
+   });
+
+
+    var departementsRequest = new XMLHttpRequest();
+    departementsRequest.open('GET', 'IGN_GEOFLA_DEPARTEMENT_2012.json', true); 
+    departementsRequest.onload = function() {
+    if (departementsRequest.status >= 200 && departementsRequest.status < 400) {
+        // Success!
+        var data = JSON.parse(departementsRequest.responseText);
+        L.geoJson(data)
+        .addTo(map);
+    } else {
+    }
+    };
+    departementsRequest.send();
+
+    var etablissementsRequest = new XMLHttpRequest();
+    etablissementsRequest.open('GET', 'etablissements_scolaire.min.json', true); 
+    etablissementsRequest.onload = function() {
+	  if (etablissementsRequest.status >= 200 && etablissementsRequest.status < 400) {
+	    // Success!
+	    var data = JSON.parse(etablissementsRequest.responseText);
+
+        var etablissements = L.geoJson(data, {
+							pointToLayer: function(geoJson, latlng) {
+								var marker = L.marker(latlng);
+								marker.bindPopup("<b>"+geoJson["properties"]["appellation_officielle_uai"]+"</b>");
+								return marker;
+							}
+						});
+        var markers = L.markerClusterGroup();
+        markers.addLayer(etablissements);
+        map.addLayer(markers);    
+	  } else {
+	  }
+	};
+    etablissementsRequest.send();
+
+</script>
+</body>
+</html>

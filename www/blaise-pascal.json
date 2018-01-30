@@ -1,0 +1,266 @@
+{
+    "type": "FeatureCollection",
+    "features": [
+      {
+        "type": "Feature",
+        "properties": {
+          "gml_id": "etablissements_scolaire.60417",
+          "numero_uai": "0911145A",
+          "appellation_officielle_uai": "Collège Blaise Pascal",
+          "denomination_principale_uai": "COLLEGE",
+          "patronyme_uai": "BLAISE PASCAL",
+          "x": 650507,
+          "y": 6840341,
+          "etat_etablissement": "1",
+          "nature_uai": "340",
+          "lib_nature": "COLLEGE",
+          "sous_fic": "3"
+        },
+        "geometry": {
+          "type": "Point",
+          "coordinates": [
+            2.327977146666298,
+            48.661341566679994
+          ]
+        }
+      },
+      {
+        "type": "Feature",
+        "properties": {
+          "courses": [
+            {
+              "companieName": "Association Musique et Education 91",
+              "title": "Les Chorales des collèges de l&amp;#8217;Essonne",
+              "accessKey": "701"
+            },
+            {
+              "companieName": "Collège au cinema",
+              "title": "COLLEGE AU CINEMA",
+              "accessKey": "490"
+            },
+            {
+              "companieName": "Direction des services départementaux de l&amp;#8217;Education nationale",
+              "title": "Le Concours national de la Résistance et de la Déportation",
+              "accessKey": "413"
+            }
+          ]
+        },
+        "geometry": {
+          "type": "Point",
+          "coordinates": [
+            2.4381666,
+            48.627747
+          ]
+        }
+      },
+      {
+        "type": "Feature",
+        "properties": {
+          "courses": [
+            {
+              "companieName": "Centre d’information forestier – la Faisanderie de Sénart",
+              "title": "Animation en forêt de Sénart",
+              "accessKey": "560"
+            }
+          ]
+        },
+        "geometry": {
+          "type": "Point",
+          "coordinates": [
+            2.4898283,
+            48.657303
+          ]
+        }
+      },
+      {
+        "type": "Feature",
+        "properties": {
+          "courses": [
+            {
+              "companieName": "Maison Jean Cocteau",
+              "title": "La Belle et la bête",
+              "accessKey": "562"
+            }
+          ]
+        },
+        "geometry": {
+          "type": "Point",
+          "coordinates": [
+            2.4648333,
+            48.402172
+          ]
+        }
+      },
+      {
+        "type": "Feature",
+        "properties": {
+          "courses": [
+            {
+              "companieName": "Les archives départementales / Conseil départemental de l&amp;#8217;Essonne",
+              "title": "Construire un projet avec les Archives départementales",
+              "accessKey": "2309"
+            },
+            {
+              "companieName": "Domaine départemental de Chamarande",
+              "title": "Orientation et escalade au Domaine de Chamarande",
+              "accessKey": "485"
+            }
+          ]
+        },
+        "geometry": {
+          "type": "Point",
+          "coordinates": [
+            2.2187052,
+            48.51369
+          ]
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": {
+          "type": "Point",
+          "coordinates": [
+            2.355441,
+            48.866677
+          ]
+        },
+        "properties": {
+          "new_name": "Ile-de-France",
+          "periode_ouverture": "Ouvert du mardi au dimanche de 10 h à 18h, jeudi jusqu'à 21h30",
+          "fax": "0153018201",
+          "adr": "292, rue Saint-Martin",
+          "ville": "PARIS cedex 03",
+          "nomreg": "ILE-DE-FRANCE",
+          "nom_du_musee": "Musée National des Techniques (Conservatoire National des Arts et Métiers)",
+          "sitweb": "www.arts-et-metiers.net",
+          "telephone1": "0153018200",
+          "fermeture_annuelle": "1er mai, 25 décembre",
+          "jours_nocturnes": "Jeudi jusqu'à 21 h 30",
+          "cp": "75141",
+          "nomreg_normalized": "ile de france",
+          "nomdep": "PARIS"
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": {
+          "type": "Point",
+          "coordinates": [
+            2.35966713643,
+            48.8630306677
+          ]
+        },
+        "properties": {
+          "new_name": "Ile-de-France",
+          "periode_ouverture": "Ouvert du mardi au vendredi de 11h30 à 18h, samedi et dimanche de 9h30 à 18h, jours fériés (sauf lundis) de 9h30 à 18h\nEn période de vacances scolaires (zone C), le Musée est ouvert du mardi au dimanche de 9h30 à 18h00",
+          "fax": "0148047546",
+          "adr": "Hôtel Salé\n5, Rue de Thorigny",
+          "ville": "PARIS",
+          "nomreg": "ILE-DE-FRANCE",
+          "coordonnees_finales": [
+            48.8630306677,
+            2.35966713643
+          ],
+          "sitweb": "www.musee-picasso.fr",
+          "telephone1": "0185560036",
+          "fermeture_annuelle": "1er janvier 1er mai et 25 décembre",
+          "coordonnees_cp": [
+            48.8630306677,
+            2.35966713643
+          ],
+          "cp": "75003",
+          "nomreg_normalized": "ile de france",
+          "nom_du_musee": "Musée National Picasso",
+          "nomdep": "PARIS"
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": {
+          "type": "Point",
+          "coordinates": [
+            2.325917,
+            48.859754
+          ]
+        },
+        "properties": {
+          "new_name": "Ile-de-France",
+          "periode_ouverture": "Ouvert le mardi, mercredi, vendredi au dimanche de 9h30 à 18h, le jeudi de 9h30 à 21h45",
+          "fax": "0145485660",
+          "adr": "62, Rue de Lille",
+          "ville": "PARIS",
+          "nomreg": "ILE-DE-FRANCE",
+          "coordonnees_finales": [
+            48.859754,
+            2.325917
+          ],
+          "coordonnees_ban": [
+            48.859754,
+            2.325917
+          ],
+          "nomreg_normalized": "ile de france",
+          "sitweb": "www.musee-orsay.fr",
+          "telephone1": "0140494814",
+          "fermeture_annuelle": "Jours fériés",
+          "coordonnees_cp": [
+            48.8561051636,
+            2.31254406306
+          ],
+          "cp": "75007",
+          "jours_nocturnes": "Jeudi jusqu'à 21h45",
+          "nom_du_musee": "Etablissement Public du Musée d'Orsay",
+          "nomdep": "PARIS"
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": {
+          "type": "Point",
+          "coordinates": [
+            2.278226,
+            48.85257
+          ]
+        },
+        "properties": {
+          "cartodb_id": 3,
+          "cartodb_georef_status": true,
+          "annee_d_ouverture": 2014,
+          "code_postal": 75016,
+          "couleur": "",
+          "capacite_max": 1461,
+          "nom": "Maison de la Radio",
+          "adresse": "116 avenue du président kennedy 75016 Paris",
+          "ville": "Paris",
+          "pays": "France"
+        }
+      },
+      {
+        "type": "Feature",
+        "properties": {
+          "name": "Cinéma Les 4 Perray",
+          "type" : "CINEMA"
+        },
+        "geometry": {
+          "type": "Point",
+          "coordinates": [
+            2.3171228170394897,
+            48.65092228655501
+          ]
+        }
+      },
+      {
+        "type": "Feature",
+        "properties": {
+          "name": "Espace Marcel Carné - Théâtre",
+          "type" : "THEATRE"
+        },
+        "geometry": {
+          "type": "Point",
+          "coordinates": [
+            2.321808636188507,
+            48.6374409735913
+          ]
+        }
+      }
+    ]
+  }

@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html>
+<head>
+   <title>EAC AC Poitier</title>
+
+   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.1/dist/leaflet.css" />
+   <link rel="stylesheet" href="https://rawgit.com/Leaflet/Leaflet.markercluster/v1.2.0/dist/MarkerCluster.css" />
+   <link rel="stylesheet" href="https://rawgit.com/Leaflet/Leaflet.markercluster/v1.2.0/dist/MarkerCluster.Default.css" />
+   <link rel="stylesheet" href="https://cdn.rawgit.com/Pixabay/JavaScript-autoComplete/1.0.4/auto-complete.css" />
+   <link rel="stylesheet" href="https://opensource.keycdn.com/fontawesome/4.7.0/font-awesome.min.css" integrity="sha384-dNpIIXE8U05kAbPhy3G1cz+yZmTzA6CY8Vg/u2L9xRnHjJiAK76m2BIEaSEV+/aU" crossorigin="anonymous">
+   <script src="https://unpkg.com/leaflet@1.3.1/dist/leaflet.js"></script>
+   <script src="https://rawgit.com/Leaflet/Leaflet.markercluster/v1.2.0/dist/leaflet.markercluster.js"></script>
+   <script src="https://cdn.rawgit.com/Pixabay/JavaScript-autoComplete/1.0.4/auto-complete.min.js"></script>
+   <style type="text/css">
+       html, body { 
+           height: 100%; 
+           margin: 0; 
+           padding: 0;
+       }
+       #map {
+           height: 100%;
+           display: block;
+       }
+       .address {
+           width: 300px;
+           position: absolute;
+           padding: 5px;
+           top: 10px;
+           left: 55px;
+       }
+
+       .icon__label {
+            border-width: 3px;
+            border-radius: 15px;
+            text-align: center;
+            font-weight: bold; 
+            border: 1px solid #666;
+            background-color: white;
+        }
+        .icon__label--red {
+            background-color: rgba(222, 27, 27, 0.7);
+        }
+        .icon__label--orange {
+            background-color: rgba(217, 133, 59, 0.7);
+        }
+        .icon__label--green {
+            background-color: rgba(168, 205, 27, 0.7);
+        }
+        .icon__label--grey {
+            background-color: rgba(150, 150, 150, 0.7);
+        }
+        .icon__label--no-border {
+            border: none;
+        }
+   </style>
+
+</head>
+
+<body>
+<div id="map">
+</div>
+<script type="text/javascript">
+    // This will parse a delimited string into an array of
+    // arrays. The default delimiter is the comma, but this
+    // can be overriden in the second argument.
+    function CSVToArray( strData, strDelimiter ){
+        // Check to see if the delimiter is defined. If not,
+        // then default to comma.
+        strDelimiter = (strDelimiter || ",");
+        // Create a regular expression to parse the CSV values.
+        var objPattern = new RegExp(
+            (
+                // Delimiters.
+                "(\\" + strDelimiter + "|\\r?\\n|\\r|^)" +
+                // Quoted fields.
+                "(?:\"([^\"]*(?:\"\"[^\"]*)*)\"|" +
+                // Standard fields.
+                "([^\"\\" + strDelimiter + "\\r\\n]*))"
+            ),
+            "gi"
+            );
+        // Create an array to hold our data. Give the array
+        // a default empty first row.
+        var arrData = [[]];
+        // Create an array to hold our individual pattern
+        // matching groups.
+        var arrMatches = null;
+        // Keep looping over the regular expression matches
+        // until we can no longer find a match.
+        while (arrMatches = objPattern.exec( strData )){
+            // Get the delimiter that was found.
+            var strMatchedDelimiter = arrMatches[ 1 ];
+            // Check to see if the given delimiter has a length
+            // (is not the start of string) and if it matches
+            // field delimiter. If id does not, then we know
+            // that this delimiter is a row delimiter.
+            if (
+                strMatchedDelimiter.length &&
+                (strMatchedDelimiter != strDelimiter)
+                ){
+                // Since we have reached a new row of data,
+                // add an empty row to our data array.
+                arrData.push( [] );
+            }
+            // Now that we have our delimiter out of the way,
+            // let's check to see which kind of value we
+            // captured (quoted or unquoted).
+            if (arrMatches[ 2 ]){
+                // We found a quoted value. When we capture
+                // this value, unescape any double quotes.
+                var strMatchedValue = arrMatches[ 2 ].replace(
+                    new RegExp( "\"\"", "g" ),
+                    "\""
+                    );
+            } else {
+                // We found a non-quoted value.
+                var strMatchedValue = arrMatches[ 3 ];
+            }
+            // Now that we have our value string, let's add
+            // it to the data array.
+            arrData[ arrData.length - 1 ].push( strMatchedValue );
+        }
+        // Return the parsed data.
+        return( arrData );
+    }
+</script>
+<script>
+   var center = {lat: 46.10942153064164, lng: -0.23620605468750003};
+// Map
+   var map = L.map('map', {
+       drawControl: true,
+       center: center,
+       zoom: 8,
+       minZoom: 6
+   });
+
+   L.tileLayer(
+       'http://{s}.tile.openstreetmap.fr/openriverboatmap/{z}/{x}/{y}.png', {
+       attribution: '&copy; <a href="http://openstreetmap.org">OpenStreetMap</a> Contributors & <a href="http://openstreetmap.fr/">OSM FR</a>',
+       maxZoom: 18,
+   }).addTo(map);
+
+    
+    var etablissementsStats = {};
+    // Etablissements
+    var etablissementsStatsRequest = new XMLHttpRequest();
+    etablissementsStatsRequest.open('GET', 'eac-ac-poitier-college.csv', true); 
+    etablissementsStatsRequest.onload = function() {
+	  if (etablissementsStatsRequest.status >= 200 && etablissementsStatsRequest.status < 400) {
+        
+        // Success!
+        var data = CSVToArray(etablissementsStatsRequest.responseText, ",");
+        Array.from(data).forEach(function(element) {
+            etablissementsStats[element[0]] = element[1];
+        });
+        
+         etablissementsRequest.send();
+	  } else {
+	  }
+	};
+
+    etablissementsStatsRequest.send();
+
+    var etablissementsRequest = new XMLHttpRequest();
+    etablissementsRequest.open('GET', 'etablissements_scolaire.min.json', true); 
+    etablissementsRequest.onload = function() {
+	  if (etablissementsRequest.status >= 200 && etablissementsRequest.status < 400) {
+            // Success!
+	    var data = JSON.parse(etablissementsRequest.responseText);
+        var jsonEtablissements = data["features"].filter(function(element) {
+            return ["016","017","086","079"].indexOf(element["properties"]["numero_uai"].substring(0,3)) != -1 && element["properties"]["lib_nature"] == "COLLEGE";
+        });
+	    var etablissements = L.geoJson(jsonEtablissements, {
+							pointToLayer: function(geoJson, latlng) {
+                                var stat = etablissementsStats[geoJson["properties"]["numero_uai"]];
+                                if(stat == undefined) {
+                                    stat = "?";
+                                    color = "grey";
+                                } else if(stat < 4) {
+                                    color = "red";
+                                } else if(stat < 9) {
+                                    color = "orange";
+                                } else {
+                                    color = "green";
+                                }
+
+								var icon = L.divIcon({
+                                        html: stat, 
+                                        className: 'icon__label icon__label--'+color,
+                                        iconSize: [18,18]
+                                    });
+                                    marker = L.marker(latlng, {icon: icon});
+								marker.bindPopup("<b>"+geoJson["properties"]["appellation_officielle_uai"]+"</b>");
+								return marker;
+							}
+                        });
+                        etablissements.addTo(map);
+        /*var markers = L.markerClusterGroup();
+        markers.addLayer(etablissements);
+        map.addLayer(markers);    */
+	  } else {
+	  }
+	};
+
+    var departementsRequest = new XMLHttpRequest();
+    departementsRequest.open('GET', 'IGN_GEOFLA_DEPARTEMENT_2012.json', true); 
+    departementsRequest.onload = function() {
+    if (departementsRequest.status >= 200 && departementsRequest.status < 400) {
+        // Success!
+        var data = JSON.parse(departementsRequest.responseText);
+        var deps = data["features"].filter(function(geoDep){ 
+            return ["16","17","86","79"].indexOf(geoDep["properties"]["CODE_DEPT"]) != -1 
+            }
+        )
+        L.geoJson(deps)
+        .addTo(map);
+    } else {
+    }
+    };
+    departementsRequest.send();
+</script>
+</body>
+</html>
