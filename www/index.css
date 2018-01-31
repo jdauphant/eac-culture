@@ -5,19 +5,40 @@
 */
 
 .main {
-    height: 100%; 
+    height: calc(100% - 158px); 
     margin: 0; 
     padding: 0;
 }
 
+.filter {
+    width: 100%;
+    height: 58px;	
+    background-color: #F5F5F5;
+}
+
 .header {
-    height: 70px;
+    position: relative;
+    height: 100px;
     width: 100%;
     margin: 0; 
+    box-shadow: 0 1px 1px 0 rgba(183,183,183,0.5);
+}
+
+.header__image {
+    position: absolute;
+    top: -10px;
+    left: 35px;
+    height: 154px;	
+    width: 158px;	
+    border-radius: 8px;	
+    background-color: #FFFFFF;	
+    box-shadow: 0 2px 4px 0 rgba(0,0,0,0.18);
     background-image: url("images/logo-eac.jpg");
-    background-position: -3% 54%;
-    background-size: 300px;
+    background-position: center;
+    background-size: 95%;
     background-repeat: no-repeat;
+    z-index: 999;
+
 }
 
 .header__avatar {
@@ -26,16 +47,19 @@
 }
 
 .header__avatar:hover {
-    background: rgb(89, 157, 202);
+    background: rgb(0, 90, 138);
 }
 
 .header__favorites {
-    background: rgb(238, 231, 31);
-    background-image: url("images/icons/star-filled-50.png") !important;
+    -webkit-mask-image: url("images/icons/star-filled-50.png");
+    -webkit-mask-size: 50%;
+    -webkit-mask-repeat: no-repeat;
+    -webkit-mask-position: center;
+    background-color: #0081CB;
 }
 
 .header__favorites:hover {
-    background: rgb(255, 251, 28);
+    background: rgb(0, 90, 138);
 }
 
 
@@ -43,7 +67,7 @@
     background-repeat: no-repeat !important;
     background-position: center !important;
     height: 100%;
-    width: 70px;
+    width: 100px;
     float: right;
 }
 
@@ -58,7 +82,6 @@
     display: block;
     height: 100%;
     width: 50%;
-    background-color: #F3F3F3;
     position: relative;
     text-align: center;
     box-sizing: border-box;
@@ -85,16 +108,16 @@
 .galery__card {
     margin: 15px;
     padding: 0px;
-    width: 400px;
-    height: 250px;
+    width: 274px;
+    height: 234px;
     border-radius: 2px;
     display: inline-block;
     vertical-align: top;
     background-color: white;
     position: relative;
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
+    box-shadow: 0 5px 12px 0 rgba(69,69,69,0.23);
     font-family: "Helvetica", "Arial", sans-serif;
-       line-height: 1.3;
+    line-height: 1.3;
 }
 
 .galery__card--clickable {
@@ -104,11 +127,19 @@
 .galery__card__image {
     position: absolute;
     display: inline-block;
-    width: 50px;
-    height: 50px;
-    top: 15px;
-    left: 10px;
+    width: 60px;
+    height: 53px;
+    top: 0px;
+    left: 0px;
     z-index: 99;
+    background-position: center;
+    background-size: 50%;
+    background-color: #60ADD9;
+    background-color: white;
+    background-repeat: no-repeat;
+    -webkit-mask-size: 60%;
+    -webkit-mask-repeat: no-repeat;
+    -webkit-mask-position: center;
 }
 
 .galery__card__title {
@@ -116,25 +147,31 @@
     display: inline-block;
     width: 100%;
     margin: 0px;
-    text-align: center;
-    font-weight: bold;
     color: white;
-    background: rgba(69, 80, 231, 0.7);
-    font-size: 30px;
-    padding-left: 60px;
+    text-align: left;
+    background-color: #0081CB;
+    font-family: 'Nunito', sans-serif;
+    font-size: 16px;	
+    font-weight: 600;	
+    line-height: 19px;
+    padding-left: 65px;
+    padding-top: 7px;
     box-sizing: border-box;
-    min-height: 80px;
+    height: 53px; 
+    
 }
 
 
 .galery__card__description {
     position: relative;
     display: inline-block;
-    margin: 20px 10px 10px 10px !important;
+    margin: 10px !important;
     padding: 0px;
     text-align: left;
     color: #555;
     font-size: 15px;
+    height: 130px;
+    overflow-x: auto;
 }
 
 .galery__card__bottom {
@@ -143,12 +180,14 @@
     margin: 0px;
     width: 100%;
     font-weight: bold;
-    border-radius: 0px 0px 2px 2px;
     left: 0px;
     display: block;
-    padding: 5px;
+    padding: 6px;
+    height: 33px;
     background: rgba(204, 204, 204, 0.7);
     box-sizing: border-box;
+    font-size: 13px;
+    font-weight: 600;
 }
 
 
