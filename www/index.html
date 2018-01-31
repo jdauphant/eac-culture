@@ -72,7 +72,7 @@
         var map = L.map('map', {
             drawControl: true,
             center: center,
-            zoom: 13,
+            zoom: 15,
             minZoom: 3
         });
         
@@ -99,8 +99,8 @@
                 
                 var icon = L.divIcon({
                     html: "C", 
-                    className: 'icon__label icon__label--green',
-                    iconSize: [18,18]
+                    className: 'icon__label icon__label--college',
+                    iconSize: [50,50]
                 });
                 etablissements.forEach(function(element) {
                     var lat = Number(element[11]);
@@ -138,27 +138,27 @@
                         var icon;
                         if(element[2] === "Théâtre" ) {
                             icon = L.divIcon({
-                                html: "<img src='images/icons/theatre-mask-filled-50.png' style='width: 70%; margin: 15%;'>", 
+                                html: "<img src='images/icons/theatre-mask-filled-50.png' style='width: 50%; margin: 25%;'>", 
                                 className: 'icon__label icon__label--no-border',
-                                iconSize: [25,25]
+                                iconSize: [50,50]
                             });
                         } else if(element[2] == "Cinéma" ) {
                             icon = L.divIcon({
-                                html: "<img src='images/icons/movie-filled-50.png' style='width: 70%; margin: 15%;'>", 
+                                html: "<img src='images/icons/movie-filled-50.png' style='width: 50%; margin:25%;'>", 
                                 className: 'icon__label icon__label--no-border',
-                                iconSize: [25,25]
+                                iconSize: [50,50]
                             });
                         } else if(element[2] != "Musée") {
                             icon = L.divIcon({
-                                html: "<img src='images/icons/museum-filled-50.png' style='width: 70%; margin: 15%;'>", 
+                                html: "<img src='images/icons/museum-filled-50.png' style='width: 50%; margin:25%;'>", 
                                 className: 'icon__label icon__label--no-border',
-                                iconSize: [25,25]
+                                iconSize: [50,50]
                             });
                         } else {
                             icon = L.divIcon({
                                 html: "A", 
                                 className: 'icon__label icon__label--orange',
-                                iconSize: [25,25]
+                                iconSize: [50,50]
                             });
                         }
                         var marker = L.marker({ lat: lat, lng: lon}, {icon: icon});

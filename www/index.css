@@ -195,14 +195,17 @@
 */
 .icon__label {
     border-width: 3px;
-    border-radius: 15px;
+    border-radius: 50%;
     text-align: center;
     font-weight: bold; 
     border: 1px solid #666;
     background-color: #60ADD9;
+    color: white;
+    font-size: 32px;
+    font-weight: bold;
 }
-.icon__label--red {
-    background-color: rgba(222, 27, 27, 0.7);
+.icon__label--college {
+    background-color: #53205D;
 }
 .icon__label--orange {
     background-color: rgba(217, 133, 59, 0.7);
