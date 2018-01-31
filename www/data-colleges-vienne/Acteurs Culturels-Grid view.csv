@@ -1,18 +1,20 @@
-Nom,Type,Code Postal,Adresse Postal,latitude,longitude
-Théâtre de l'Etincelle,Théâtre,,,,
-Le confort moderne,,,,,
-Compagnie Sons de Toile,,,,,
-Les chorales de Vienne,Musique/Orchestre,?,,,
-La Comédie Poitou-Charentes,Théâtre,86000,"66/64 Boulevard de Pont Achard, 86000 Poitiers",46.575043,0.328969
-La Maison persane,Théâtre,86000,"6 Rue du Mouton, 86000 Poitiers",46.589714,0.343577
-Scène Nationale de Poitiers (TAP Poitiers),Théâtre,86000,"1 Boulevard de Verdun, 86000 Poitiers",46.583911,0.337411
-Médiathèque François-Mitterrand,Bibliothèque/Médiathèque,86000,"4 Rue de l'Université, 86000 Poitiers",46.584496,0.342638
-JM France Territoire Poitou-Charentes,Musique/Orchestre,86100,"8 Rue de la Taupanne, 86100 Châtellerault",46.820088,0.542915
-Cinéma Cornay,Cinéma,86200,"13 Rue de l'Abreuvoir, 86200 Loudun",47.010891,0.083961
-Mediathèque Antoine de St Exupéry,Bibliothèque/Médiathèque,86210,"40 bis place de la Libération, 86210 VOUNEUIL SUR VIENNE ",46.718051,0.538768
-Compagnie Le loup qui zozote,Théâtre,86300,"13 Plan Saint-Pierre, 86300 Chauvigny",46.570263,0.648597
-Collectif Lectures à Chauvigny,,86300,,,
-Association mémorielle d'Oradour,Histoire,87170,,,
-Cinéma de Gençay,Cinéma,,,,
-Le musée de la préhistoire,Musée,,,,
-Maison Des Jeunes 21,,,,,
+Nom,Description,Type,Code Postal,Adresse Postal,latitude,longitude
+Théâtre de l'Etincelle,"Création, production, promotion et diffusion de spectacless de théâtre, de marionnettes et des créations audiovisuels, formation des métiers artistiques, organisation et/ou participation à de manifestations artistiques et culturelles et toute action liée directement ou indirectement au spectacle vivant",Théâtre,86000,"12 Rue de la Souche, 86000 Poitiers",46.571992,0.325372
+Le confort moderne,"Le Confort Moderne, parfois surnommé « le Confort », est un ensemble de salles, consacré aux musiques et à l'art contemporains",Concerts/Expositions,86000,"185 Rue du Faubourg du Pont-Neuf, 86000 Poitiers",46.572692,0.359674
+Compagnie Sons de Toile,La Cie sOnsdetOile est née en janvier 2010 d'une envie collective de créer un terrain de jeu artistique et un laboratoire liés à l’expression corporelle sous toutes ses formes,Expressions corporelles,33690,"Mairie, 4 Poutéou-est, 33690 Sigalens",44.451869,-0.045439
+Les chorales de Vienne,,Musique/Orchestre,?,,,
+La Comédie Poitou-Charentes,"La Comédie Poitou-Charentes propose toute l'année des pièces de théâtre contemporaines ou qui revisitent les classiques.
+En tant que centre dramatique national, elle propose au public des créations théâtrales et veille à promouvoir le spectacle vivant. Elle accompagne ainsi les auteurs, artistes et metteurs en scène afin qu'ils puissent exprimer librement leur travail.",Théâtre,86000,"66/64 Boulevard de Pont Achard, 86000 Poitiers",46.575043,0.328969
+La Maison persane,Cours et stages de musique,Théâtre,86000,"6 Rue du Mouton, 86000 Poitiers",46.589714,0.343577
+Scène Nationale de Poitiers (TAP Poitiers),"Une programmation axée sur le spectacle vivant et le cinéma, témoin de la diversité de la création artistique contemporaine. Le TAP - scène nationale - fait partie des 70 établissements labellisés par le Ministère de la Culture. Il a pour missions de soutenir et de faire partager la création artistique et de permettre la rencontre du public et des artistes.",Théâtre,86000,"1 Boulevard de Verdun, 86000 Poitiers",46.583911,0.337411
+Médiathèque François-Mitterrand,"Devenue bibliothèque municipale classée, elle prend le nom de Médiathèque François-Mitterrand en 1996 avec l'inauguration du bâtiment actuel, construit dans le cadre du programme des Bibliothèques municipales à vocation régionale",Bibliothèque/Médiathèque,86000,"4 Rue de l'Université, 86000 Poitiers",46.584496,0.342638
+JM France Territoire Poitou-Charentes,"Depuis plus de 70 ans, les JM France, association reconnue d'utilité publique, oeuvrent pour l'accès à la musique de tous les enfants et jeunes, prioritairement issus de territoires reculés ou défavorisés.",Musique/Orchestre,86100,"8 Rue de la Taupanne, 86100 Châtellerault",46.820088,0.542915
+Cinéma Cornay,,Cinéma,86200,"13 Rue de l'Abreuvoir, 86200 Loudun",47.010891,0.083961
+Mediathèque Antoine de St Exupéry,,Bibliothèque/Médiathèque,86210 ,"40 bis place de la Libération, 86210 VOUNEUIL SUR VIENNE ",46.718051,0.538768
+Compagnie Le loup qui zozote,"En résidence permanente au théâtre la grange aux loups, le loup qui zozote a pour objectifs de promouvoir la production et la diffusion de spectacles vivants, la formation et l'accueil d'artistes.",Théâtre,86300,"13 Plan Saint-Pierre, 86300 Chauvigny",46.570263,0.648597
+Collectif Lectures à Chauvigny,Le collectif “ Lectures à Chauvigny ” regroupe de nombreuses associations afin de promouvoir et porter la lecture sur le territoire,Lecture,86300,,,
+Association mémorielle d'Oradour,,Histoire,87170,,,
+Cinéma de Gençay,,Cinéma,86160,"passage des 3 marchands, 96160 Gençay",46.374814,0.404738
+Le musée de la préhistoire,"Le Musée de Préhistoire de Lussac-les-Châteaux, labélisé Musée de France, est consacré à la Préhistoire en Poitou-Charentes.",Musée,86320,"21 Route de Montmorillon, 86320 Lussac-les-Châteaux",46.403482,0.725666
+Maison Des Jeunes 21,,,,,,
+Festival de la Bande dessinée (Angoulême),,,16000,"71 Rue Hergé, 16000 Angoulême",45.648698,0.157692
