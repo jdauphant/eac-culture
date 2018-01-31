@@ -168,15 +168,38 @@
         acteursCulturels = Array.from(data);
         acteursCulturels.shift();
         projetEACRequest.send();
-        var icon = L.divIcon({
-            html: "A", 
-            className: 'icon__label icon__label--orange',
-            iconSize: [18,18]
-        });
+
+       
         acteursCulturels.forEach(function(element) {
             var lat = Number(element[4]);
             var lon = Number(element[5]);
             if(lat != 0 && lon != 0) {
+                var icon;
+                if(element[1] === "Théâtre" ) {
+                    icon = L.divIcon({
+                        html: "<img src='images/icons/theatre-mask-filled-50.png' style='width: 70%; margin: 15%;'>", 
+                        className: 'icon__label icon__label--no-border',
+                        iconSize: [25,25]
+                    });
+                } else if(element[1] == "Cinéma" ) {
+                    icon = L.divIcon({
+                        html: "<img src='images/icons/movie-filled-50.png' style='width: 70%; margin: 15%;'>", 
+                        className: 'icon__label icon__label--no-border',
+                        iconSize: [25,25]
+                    });
+                } else if(element[1] != "Musée") {
+                    icon = L.divIcon({
+                        html: "<img src='images/icons/museum-filled-50.png' style='width: 70%; margin: 15%;'>", 
+                        className: 'icon__label icon__label--no-border',
+                        iconSize: [25,25]
+                    });
+                } else {
+                    icon = L.divIcon({
+                        html: "A", 
+                        className: 'icon__label icon__label--orange',
+                        iconSize: [25,25]
+                     });
+                }
                 var marker = L.marker({ lat: lat, lng: lon}, {icon: icon});
                 marker.addTo(map);
             }
