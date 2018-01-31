@@ -147,6 +147,7 @@
             var lon = Number(element[12]);
             if(lat != 0 && lon != 0) {
                 var marker = L.marker({ lat: lat, lng: lon}, {icon: icon});
+                marker.bindPopup("<b>"+element[1]+"</b>");
                 marker.addTo(map);
             }
         });
@@ -201,6 +202,7 @@
                      });
                 }
                 var marker = L.marker({ lat: lat, lng: lon}, {icon: icon});
+                marker.bindPopup("<b>"+element[0]+"</b>");
                 marker.addTo(map);
             }
         });
@@ -231,14 +233,25 @@
         var data = CSVToArray(projetEACRequest.responseText, ",");
         var projetEAC = Array.from(data);
         projetEAC.shift();
-        projetEAC.forEach(function(element) {
-            var school = searchEtablissement(element[2]);
-            var culturalActor = searchActeurCulturels(element[8]);
+        var links = projetEAC.reduce(
+            (acc, action) =>  { 
+                if(action[8] != "" && action[8] != undefined) {  
+                    return acc.concat(action[8].split(',').map(e => { return { school: action[2], culture: e} }));
+                } else { 
+                    return acc 
+                    } 
+            }, Array.from([]));
+
+            links.forEach(function(element) {
+            var school = searchEtablissement(element.school);
+            var culturalActor = searchActeurCulturels(element.culture);
             if(school != undefined && culturalActor != undefined) {
                 var coord1 = { lat: school[11], lng: school[12]};
-                var coord2 = { lat: culturalActor[4], lng: culturalActor[5]};
+                if(culturalActor[4] != undefined && culturalActor[5] != undefined && culturalActor[4] != 0 && culturalActor[5] != 0) {
+                    var coord2 = { lat: culturalActor[4], lng: culturalActor[5]};
+                    var polyline = L.polyline([coord1, coord2], {color: 'blue'}).addTo(map);
+                }
 
-                var polyline = L.polyline([coord1, coord2], {color: 'blue'}).addTo(map);
             }
         });
         
