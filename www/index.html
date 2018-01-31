@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-   <title>Sorties Blaise Pascal</title>
+   <title>Evenement EAC</title>
 
    <meta charset="utf-8" />
    <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -15,6 +15,7 @@
    <script src="https://unpkg.com/leaflet@1.3.1/dist/leaflet.js"></script>
    <script src="https://rawgit.com/Leaflet/Leaflet.markercluster/v1.2.0/dist/leaflet.markercluster.js"></script>
    <script src="https://cdn.rawgit.com/Pixabay/JavaScript-autoComplete/1.0.4/auto-complete.min.js"></script>
+   <script src="js/csv.js"></script>
    <style type="text/css">
        html, body { 
            height: 100%; 
@@ -105,14 +106,14 @@
 </div>
 </div>
 <script>
-   var center = { lat: 47.398659, lng: 2.195567 };
+   var center = {lat: 46.57886370185589, lng: 0.3578281402587891};
 
 // Map
    var map = L.map('map', {
        drawControl: true,
        center: center,
-       zoom: 6,
-       minZoom: 6
+       zoom: 13,
+       minZoom: 3
    });
 
    L.tileLayer(
@@ -121,75 +122,109 @@
     maxZoom: 18,
     }).addTo(map);
 
-   var activitesRequest = new XMLHttpRequest();
-   activitesRequest.open('GET', 'blaise-pascal.json', true); 
-   activitesRequest.onload = function() {
-   if (activitesRequest.status >= 200 && activitesRequest.status < 400) {
-       // Success!
-       var data = JSON.parse(activitesRequest.responseText);
-      
-       L.geoJson(data, {
-                           pointToLayer: function(geoJson, latlng) {
-                                var marker;
-                                if(geoJson["properties"]["lib_nature"] == "COLLEGE") {
-                                    var icon = L.divIcon({
-                                        html: "C", 
-                                        className: 'icon__label icon__label--green',
-                                        iconSize: [18,18]
-                                    });
-                                    marker = L.marker(latlng, {icon: icon});
-                                } else if(geoJson["properties"]["type"] == "THEATRE" ) {
-                                    var icon = L.divIcon({
-                                        html: "<img src='images/icons/theatre-mask-filled-50.png' style='width: 70%; margin: 15%;'>", 
-                                        className: 'icon__label icon__label--no-border',
-                                        iconSize: [25,25]
-                                    });
-                                    marker = L.marker(latlng, {icon: icon});
-                                } else if(geoJson["properties"]["type"] == "CINEMA" ) {
-                                    var icon = L.divIcon({
-                                        html: "<img src='images/icons/movie-filled-50.png' style='width: 70%; margin: 15%;'>", 
-                                        className: 'icon__label icon__label--no-border',
-                                        iconSize: [25,25]
-                                    });
-                                    marker = L.marker(latlng, {icon: icon});
-                                } else if(geoJson["properties"]["nom_du_musee"] != undefined ) {
-                                    var icon = L.divIcon({
-                                        html: "<img src='images/icons/museum-filled-50.png' style='width: 70%; margin: 15%;'>", 
-                                        className: 'icon__label icon__label--no-border',
-                                        iconSize: [25,25]
-                                    });
-                                    marker = L.marker(latlng, {icon: icon});
-                                } else {
-                                    marker = L.marker(latlng);
-                                }
-                               try { 
-                                     marker.bindPopup("<b>"+geoJson["properties"]["courses"][0]["companieName"]+"</b> <br> "+geoJson["properties"]["courses"][0]["title"]);
-                                } catch(e){
-                                    if(geoJson["properties"]["nom_du_musee"] != undefined) {
-                                        marker.bindPopup("<b>"+geoJson["properties"]["nom_du_musee"]+"</b>");
-                                    } else if(geoJson["properties"]["name"] != undefined) {
-                                        marker.bindPopup("<b>"+geoJson["properties"]["name"]+"</b>");
-                                    }
-                                }
-                               return marker;
-                           }
-                       })
-       .addTo(map);
-       var center = data["features"][0]["geometry"]["coordinates"];
-       center = center.reverse();
-       var array = Array.from(data["features"]);
-       array.shift();
-       array.forEach(function(element) {
-           var point = element["geometry"]["coordinates"];
-           point = point.reverse();
-           var points = [center,point];
-           var polyline = L.polyline(points, {color: 'blue'}).addTo(map);
-       });
-       map.flyTo(center, 10); 
-   } else {
-   }
-   };
-   activitesRequest.send();
+    var etablissementsRequest = {};
+
+    var etablissements = [];
+    // Etablissements
+    var etablissementsRequestRequest = new XMLHttpRequest();
+    etablissementsRequestRequest.open('GET', 'data-colleges-vienne/Etablissements-Grid view.csv', true); 
+    etablissementsRequestRequest.onload = function() {
+	  if (etablissementsRequestRequest.status >= 200 && etablissementsRequestRequest.status < 400) {
+        
+        // Success!
+        var data = CSVToArray(etablissementsRequestRequest.responseText, ",");
+        etablissements = Array.from(data);
+        etablissements.shift();
+        acteursCulturelsRequestRequest.send();
+
+        var icon = L.divIcon({
+            html: "C", 
+            className: 'icon__label icon__label--green',
+            iconSize: [18,18]
+        });
+        etablissements.forEach(function(element) {
+            var lat = Number(element[11]);
+            var lon = Number(element[12]);
+            if(lat != 0 && lon != 0) {
+                var marker = L.marker({ lat: lat, lng: lon}, {icon: icon});
+                marker.addTo(map);
+            }
+        });
+	  } else {
+	  }
+	};
+
+    etablissementsRequestRequest.send();
+
+    // ActeursCulturelles
+    var acteursCulturels = [];
+    var acteursCulturelsRequestRequest = new XMLHttpRequest();
+    acteursCulturelsRequestRequest.open('GET', 'data-colleges-vienne/Acteurs Culturels-Grid view.csv', true); 
+    acteursCulturelsRequestRequest.onload = function() {
+	  if (acteursCulturelsRequestRequest.status >= 200 && acteursCulturelsRequestRequest.status < 400) {
+        
+        // Success!
+        var data = CSVToArray(acteursCulturelsRequestRequest.responseText, ",");
+        acteursCulturels = Array.from(data);
+        acteursCulturels.shift();
+        projetEACRequest.send();
+        var icon = L.divIcon({
+            html: "A", 
+            className: 'icon__label icon__label--orange',
+            iconSize: [18,18]
+        });
+        acteursCulturels.forEach(function(element) {
+            var lat = Number(element[4]);
+            var lon = Number(element[5]);
+            if(lat != 0 && lon != 0) {
+                var marker = L.marker({ lat: lat, lng: lon}, {icon: icon});
+                marker.addTo(map);
+            }
+        });
+        
+	  } else {
+	  }
+    };
+    
+    function searchEtablissement(uai) {
+        return etablissements.filter(function(element){
+            return element[0] === uai;
+        })[0];
+    }
+
+    function searchActeurCulturels(name) {
+        return acteursCulturels.filter(function(element){
+            return element[0] === name;
+        })[0];
+    }
+
+    // Projects
+    var projetEACRequest = new XMLHttpRequest();
+    projetEACRequest.open('GET', 'data-colleges-vienne/Actions-Grid view.csv', true); 
+    projetEACRequest.onload = function() {
+	  if (projetEACRequest.status >= 200 && projetEACRequest.status < 400) {
+        
+        // Success!
+        var data = CSVToArray(projetEACRequest.responseText, ",");
+        var projetEAC = Array.from(data);
+        projetEAC.shift();
+        projetEAC.forEach(function(element) {
+            var school = searchEtablissement(element[2]);
+            var culturalActor = searchActeurCulturels(element[8]);
+            if(school != undefined && culturalActor != undefined) {
+                var coord1 = { lat: school[11], lng: school[12]};
+                var coord2 = { lat: culturalActor[4], lng: culturalActor[5]};
+
+                var polyline = L.polyline([coord1, coord2], {color: 'blue'}).addTo(map);
+            }
+        });
+        
+	  } else {
+	  }
+	};
+
+
+
 
 </script>
 </body>
