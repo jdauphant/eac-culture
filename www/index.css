@@ -14,6 +14,7 @@
     width: 100%;
     height: 58px;	
     background-color: #F5F5F5;
+    border-bottom: 1px solid #D4D4D4;
 }
 
 .header {
@@ -52,7 +53,7 @@
 
 .header__favorites {
     -webkit-mask-image: url("images/icons/star-filled-50.png");
-    -webkit-mask-size: 50%;
+    -webkit-mask-size: 35%;
     -webkit-mask-repeat: no-repeat;
     -webkit-mask-position: center;
     background-color: #0081CB;
@@ -138,6 +139,27 @@
     background-repeat: no-repeat;
 }
 
+.galery__card__favorite {
+    position: absolute;
+    top: 0px;
+    right: 15px;
+    width: 33px;
+    height: 42px;
+    background-image: url("images/vignette.png");
+    z-index: 99;
+}
+.galery__card__favorite::after {
+    content: "";
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    width: 22px;
+    height: 22px;
+    background-image: url("images/icons/star-filled-50.png");
+    background-repeat: no-repeat;
+    background-size: 100%;
+}
+
 .galery__card__title {
     position: relative;
     display: inline-block;
@@ -150,8 +172,7 @@
     font-size: 16px;	
     font-weight: 600;	
     line-height: 19px;
-    padding-left: 65px;
-    padding-top: 7px;
+    padding: 8px 60px 8px 70px;
     box-sizing: border-box;
     height: 53px; 
     
@@ -178,7 +199,7 @@
     font-weight: bold;
     left: 0px;
     display: block;
-    padding: 6px;
+    padding: 8px;
     height: 33px;
     background: rgba(204, 204, 204, 0.7);
     box-sizing: border-box;
