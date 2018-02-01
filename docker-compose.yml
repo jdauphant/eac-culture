@@ -1,0 +1,12 @@
+version: '3'
+services:
+  web:
+    build: .
+    ports:
+      - 8080:8080
+    environment:
+      - PORT=8080
+      - AIRTABLE_CACHE=1m
+    env_file: ~/.airtable/eac.env
+    volumes:
+      - ./www:/var/www
