@@ -155,6 +155,18 @@
                                 className: 'icon__label icon__label--no-border',
                                 iconSize: [50,50]
                             });
+                        } else if(element[2] != "Bibliothèque/Médiathèque") {
+                            icon = L.divIcon({
+                                html: "<img src='images/icons/library-filled-50.png' style='width: 50%; margin:25%;'>", 
+                                className: 'icon__label icon__label--no-border',
+                                iconSize: [50,50]
+                            });
+                        } else if(element[2] != "Musique/Orchestre") {
+                            icon = L.divIcon({
+                                html: "<img src='images/icons/music-filled-50.png' style='width: 50%; margin:25%;'>", 
+                                className: 'icon__label icon__label--no-border',
+                                iconSize: [50,50]
+                            });
                         } else {
                             icon = L.divIcon({
                                 html: "A", 
@@ -236,7 +248,9 @@
                         if(type == "Théâtre") {
                             icon = "theatre-mask";
                         } else if(type == "Musique/Orchestre") {
-                            icon = "music-conductor";
+                            icon = "music";
+                        } else if(type == "Bibliothèque/Médiathèque") {
+                            icon = "library";
                         } else if(type == "Cinéma") {
                             icon = "movie";
                         }
