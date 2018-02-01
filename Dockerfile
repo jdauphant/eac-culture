@@ -5,4 +5,4 @@ MAINTAINER Julien DAUPHANT
 COPY nginx/ /etc/nginx/
 COPY www /var/www
 
-EXPOSE 8080
+CMD ["/bin/bash", "-c", "envsubst '$$PORT' < /etc/nginx/conf.d/default.template > /etc/nginx/conf.d/default.conf && nginx -g 'daemon off;'"]
