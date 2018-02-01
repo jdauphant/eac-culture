@@ -226,6 +226,8 @@
 }
 .icon__label--selected-college {
     background-color: #53205D;
+    border: 5px solid #53205D;
+    box-sizing: content-box;
 }
 
 .icon__label--college {

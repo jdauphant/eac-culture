@@ -1,3 +1,6 @@
+proxy_cache_path /var/lib/nginx/cache levels=1:2 keys_zone=airtable-cache:8m max_size=50m;
+proxy_cache_key "$scheme$request_method$host$request_uri$is_args$args";
+
 server {
     listen $PORT default;
     server_name _;
@@ -5,4 +8,14 @@ server {
     root /var/www;
 	index index.html;
 
+    location /data/ {
+        proxy_pass https://api.airtable.com/v0/${AIRTABLE_DB}/;
+        proxy_method GET;
+        proxy_pass_request_body off;
+        proxy_set_header Authorization "Bearer ${AIRTABLE_KEY}";
+        proxy_cache            airtable-cache;
+        proxy_cache_valid      200  ${AIRTABLE_CACHE};
+        proxy_cache_use_stale  error timeout invalid_header updating
+                                   http_500 http_502 http_503 http_504;
+    }
 }

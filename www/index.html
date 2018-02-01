@@ -16,6 +16,7 @@
     <script src="https://rawgit.com/Leaflet/Leaflet.markercluster/v1.2.0/dist/leaflet.markercluster.js"></script>
     <script src="https://cdn.rawgit.com/Pixabay/JavaScript-autoComplete/1.0.4/auto-complete.min.js"></script>
     <script src="js/csv.js"></script>
+    <script src="https://cdn.rawgit.com/Airtable/airtable.js/d6078597/build/airtable.browser.js"></script>
     <style type="text/css">
         html, body { 
             height: 100%; 
@@ -142,12 +143,12 @@
 
         function showLinks(linksToShow, color) {
             linksToShow.forEach(function(element) {
-                    var school = searchEtablissement(element.school);
+                    var school = searchSchool(element.school);
                     var culturalActor = searchActeurCulturels(element.culture);
                     if(school != undefined && culturalActor != undefined)  {
-                        var coord1 = { lat: school[11], lng: school[12]};
-                        if(culturalActor[5] != undefined && culturalActor[6] != undefined && culturalActor[5] != 0 && culturalActor[6] != 0) {
-                            var coord2 = { lat: culturalActor[5], lng: culturalActor[6]};
+                        var coord1 = { lat: school["fields"]["latitude"], lng: school["fields"]["longitude"]};
+                        if(culturalActor["fields"]["latitude"] != undefined && culturalActor["fields"]["longitude"]) {
+                            var coord2 = { lat: culturalActor["fields"]["latitude"], lng: culturalActor["fields"]["longitude"]};
                             var polyline = L.polyline([coord1, coord2], {
                                 color: color,
                                 weight: 5,
@@ -168,15 +169,15 @@
         function showSelectedSchoolLink() {
             linksSelectedSchoolLayerGroup.clearLayers();
             links.forEach(function(element) {
-                    var school = searchEtablissement(element.school);
+                    var school = searchSchool(element.school);
                     var culturalActor = searchActeurCulturels(element.culture);
-                    if(school != undefined && culturalActor != undefined && school[0] === selectedSchool[0])  {
-                        var coord1 = { lat: school[11], lng: school[12]};
-                        if(culturalActor[5] != undefined && culturalActor[6] != undefined && culturalActor[5] != 0 && culturalActor[6] != 0) {
-                            var coord2 = { lat: culturalActor[5], lng: culturalActor[6]};
+                    if(school != undefined && culturalActor != undefined && school["id"] === selectedSchool["id"])  {
+                        var coord1 = { lat: school["fields"]["latitude"], lng: school["fields"]["longitude"]};
+                        if(culturalActor["fields"]["latitude"] != undefined && culturalActor["fields"]["longitude"]) {
+                            var coord2 = { lat: culturalActor["fields"]["latitude"], lng: culturalActor["fields"]["longitude"]};
                             var polyline = L.polyline([coord1, coord2], {
-                                color: 'blue',
-                                weight: 5,
+                                color: "#53205D",
+                                weight: 4,
                                 opacity: 0.1,
                             })
                             linksSelectedSchoolLayerGroup.addLayer(polyline);
@@ -188,22 +189,22 @@
 
         var etablissementsRequest = {};
         
-        var etablissements = [];
+        var schools = [];
 
         function showSchools() {
-            etablissements.forEach(function(element) {
-                    var lat = Number(element[11]);
-                    var lon = Number(element[12]);
-                    if(lat != 0 && lon != 0) {
-                        var latLng = { lat: lat, lng: lon};
+            schools.forEach(function(school) {
+                    var lat = school["fields"]["latitude"];
+                    var lon = school["fields"]["longitude"];
+                    if(lat != undefined && lon != undefined) {
+                        var latLng = { lat: Number(lat), lng: Number(lon)};
                         var icon;
-                        if(element[0] === selectedSchool[0]) {
+                        if(school["fields"]["numero_uai"] === selectedSchool["fields"]["numero_uai"]) {
                             icon = L.divIcon({
                                 html: "C", 
                                 className: 'icon__label icon__label--selected-college',
                                 iconSize: [50,50]
                             });
-                            map.flyTo(latLng);
+                            map.flyTo(latLng, 15);
                         } else {
                             icon = L.divIcon({
                                 html: "C", 
@@ -211,8 +212,8 @@
                                 iconSize: [50,50]
                             });
                         }
-                        var marker = L.marker(latLng, {icon: icon});
-                        marker.bindPopup("<b>"+element[1]+"</b>",
+                        var marker = L.marker(latLng, {icon: icon, riseOnHover: true});
+                        marker.bindPopup("<b>"+school["fields"]["appellation_officielle"]+"</b>",
                         {  closeButton: false });
                         marker.on('mouseover', function (e) {
                             this.openPopup();
@@ -221,11 +222,11 @@
                             this.closePopup();
                         });
 
-                        marker.on("mouseover", showLinksSchool(element[0]));
+                        marker.on("mouseover", showLinksSchool(school["id"]));
                         marker.on("mouseout", cleanLink);
                         marker.on("click", function (e) {
                             schoolLayerGroup.clearLayers();
-                            selectedSchool = element;
+                            selectedSchool = school;
                             showSchools();
                             showSelectedSchoolLink();
                         });
@@ -234,84 +235,97 @@
                 });
         }
         var selectedSchool;
-        // Etablissements
-        var etablissementsRequestRequest = new XMLHttpRequest();
-        etablissementsRequestRequest.open('GET', 'data-colleges-vienne/Etablissements-Grid view.csv', true); 
-        etablissementsRequestRequest.onload = function() {
-            if (etablissementsRequestRequest.status >= 200 && etablissementsRequestRequest.status < 400) {
-                
-                // Success!
-                var data = CSVToArray(etablissementsRequestRequest.responseText, ",");
-                etablissements = Array.from(data);
-                etablissements.shift();
-                selectedSchool = etablissements.filter(school => school[0] === "0861071X")[0];
-                acteursCulturelsRequestRequest.send();
-                
-                showSchools();
+
+
+        function httpGET(url) {
+            return new Promise((resolve, reject) => {
+                const request = new XMLHttpRequest();
+                request.open("GET", url);
+                request.onload = () => {
+                    if (request.status >= 200 && request.status < 400) {
+                        resolve(request.responseText);
+                    } else {
+                        reject(request.statusText)
+                    }
+                }
+                request.onerror = () => reject(request.statusText);
+                request.send();
+            });
+        }
+
+        function manageAirtablePage(json, base, onResult) {
+            if(json["offset"]) {
+                httpGET("/data/"+base+"?offset="+json["offset"]).then(
+                    result => {
+                        var data = JSON.parse(result);
+                        data["records"] = json["records"].concat(data["records"]);
+                        manageAirtablePage(data, base, onResult);
+                    }
+                )
             } else {
+                console.log("Success get "+base);
+                onResult(json);
             }
-        };
+        }
+
+        function getAirtableRecords(base) {
+            return new Promise((resolve, reject) => {
+                httpGET("data/"+base).then(
+                    result => {
+                        var data = JSON.parse(result);
+                        manageAirtablePage(data, base, resolve);
+                    }
+                );
+            });
+        }
         
-        etablissementsRequestRequest.send();
+        getAirtableRecords("Etablissements").then(
+            schoolTable => {
+                console.log("Nb écoles: "+schoolTable["records"].length);
+                schools = schoolTable["records"];
+                selectedSchool = schools.filter(school => school["fields"]["numero_uai"] === "0861071X")[0];
+                updateActor();
+                showSchools();
+            }
+        )
         
         // ActeursCulturelles
         var acteursCulturels = [];
-        var acteursCulturelsRequestRequest = new XMLHttpRequest();
-        acteursCulturelsRequestRequest.open('GET', 'data-colleges-vienne/Acteurs Culturels-Grid view.csv', true); 
-        acteursCulturelsRequestRequest.onload = function() {
-            if (acteursCulturelsRequestRequest.status >= 200 && acteursCulturelsRequestRequest.status < 400) {
-                
-                // Success!
-                var data = CSVToArray(acteursCulturelsRequestRequest.responseText, ",");
-                acteursCulturels = Array.from(data);
-                acteursCulturels.shift();
-                projetEACRequest.send();
-                showActeurCulturel(acteursCulturels);
-                
-                acteursCulturels.forEach(function(element) {
-                    var lat = Number(element[5]);
-                    var lon = Number(element[6]);
-                    if(lat != 0 && lon != 0) {
+        function showCulture() {
+            acteursCulturels.forEach(function(culture) {
+                var lat = culture["fields"]["latitude"];
+                var lon = culture["fields"]["longitude"];
+                if(lat != undefined && lon != undefined) {
+                        var iconType = "";
+                        var type = (culture["fields"]["Type"] || [""])[0];
+                        if(type === "Théâtre" ) {
+                            iconType = "theatre-mask";
+                        } else if(type == "Cinéma" ) {
+                            iconType = "movie";
+                        } else if(type != "Musée") {
+                            iconType = "museum";
+                        } else if(type != "Bibliothèque/Médiathèque") {
+                            iconType = "library";
+                        } else if(type != "Musique/Orchestre") {
+                            iconType = "music";
+                        }
+
                         var icon;
-                        if(element[2] === "Théâtre" ) {
+                        if(iconType != "") {
                             icon = L.divIcon({
-                                html: "<img src='images/icons/theatre-mask-filled-50.png' style='width: 50%; margin: 25%;'>", 
-                                className: 'icon__label icon__label--blue',
-                                iconSize: [50,50]
-                            });
-                        } else if(element[2] == "Cinéma" ) {
-                            icon = L.divIcon({
-                                html: "<img src='images/icons/movie-filled-50.png' style='width: 50%; margin:25%;'>", 
-                                className: 'icon__label icon__label--blue',
-                                iconSize: [50,50]
-                            });
-                        } else if(element[2] != "Musée") {
-                            icon = L.divIcon({
-                                html: "<img src='images/icons/museum-filled-50.png' style='width: 50%; margin:25%;'>", 
-                                className: 'icon__label icon__label--blue',
-                                iconSize: [50,50]
-                            });
-                        } else if(element[2] != "Bibliothèque/Médiathèque") {
-                            icon = L.divIcon({
-                                html: "<img src='images/icons/library-filled-50.png' style='width: 50%; margin:25%;'>", 
-                                className: 'icon__label icon__label--blue',
-                                iconSize: [50,50]
-                            });
-                        } else if(element[2] != "Musique/Orchestre") {
-                            icon = L.divIcon({
-                                html: "<img src='images/icons/music-filled-50.png' style='width: 50%; margin:25%;'>", 
+                                html: "<img src='images/icons/"+iconType+"-filled-50.png' style='width: 50%; margin:25%;'>", 
                                 className: 'icon__label icon__label--blue',
                                 iconSize: [50,50]
                             });
                         } else {
                             icon = L.divIcon({
                                 html: "A", 
-                                className: 'icon__label icon__label--orange',
+                                className: 'icon__label icon__label--blue',
                                 iconSize: [50,50]
                             });
                         }
-                        var marker = L.marker({ lat: lat, lng: lon}, {icon: icon});
-                        marker.bindPopup("<b>"+element[0]+"</b>",
+                        var marker = L.marker({ lat: Number(lat), lng: Number(lon)}, {icon: icon, riseOnHover: true});
+                        marker.bindPopup("<b>"+culture["fields"]["Nom"]+"</b>",
                         {  closeButton: false });
                         marker.on('mouseover', function (e) {
                             this.openPopup();
@@ -319,61 +333,65 @@
                         marker.on('mouseout', function (e) {
                             this.closePopup();
                         });
-                        marker.on("mouseover", showLinksCulture(element[0]));
+                        marker.on("mouseover", showLinksCulture(culture["id"]));
                         marker.on("mouseout", cleanLink);
                         cultureLayerGroup.addLayer(marker);
-                    }
-                });
-                
-            } else {
-            }
-        };
+                }
+            });
+        }
+
+        function updateActor() {
+            getAirtableRecords("Acteurs%20Culturels").then(
+                actorsTable => {
+                    console.log("Nb acteurs: "+actorsTable["records"].length);
+                    acteursCulturels = actorsTable["records"].sort((a,b) => b["fields"]["Total Action"] - a["fields"]["Total Action"]);
+                    updateActions();
+                    showCulture();
+                    showActeurCulturel();
+                }
+            );
+        }
+
         
-        function searchEtablissement(uai) {
-            return etablissements.filter(function(element){
-                return element[0] === uai;
+        function searchSchool(id) {
+            return schools.filter(function(element){
+                return element["id"] === id;
             })[0];
         }
         
-        function searchActeurCulturels(name) {
+        function searchActeurCulturels(id) {
             return acteursCulturels.filter(function(element){
-                return element[0] === name;
+                return element["id"] === id;
             })[0];
         }
      
-
-        // Projects
-        var projetEACRequest = new XMLHttpRequest();
-        projetEACRequest.open('GET', 'data-colleges-vienne/Actions-Grid view.csv', true); 
-        projetEACRequest.onload = function() {
-            if (projetEACRequest.status >= 200 && projetEACRequest.status < 400) {
-                
-                // Success!
-                var data = CSVToArray(projetEACRequest.responseText, ",");
-                projetEAC = Array.from(data);
-                projetEAC.shift();
-                links = projetEAC.reduce(
-                (acc, action) =>  { 
-                    if(action[8] != "" && action[8] != undefined) {  
-                        return acc.concat(action[8].split(',').map(e => { return { school: action[2], culture: e} }));
-                    } else { 
-                        return acc 
-                    } 
-                }, Array.from([]));
-                
-                showSelectedSchoolLink();
-            } else {
-            }
-        };
-
+        function updateActions() {
+            getAirtableRecords("Actions").then(
+                actionsTable => {
+                    console.log("Nb actions: "+actionsTable["records"].length);
+                    projetEAC = actionsTable["records"];
+                    links = projetEAC.reduce(
+                    (acc, action) =>  { 
+                        if(action["fields"]["UAI"] != "" && action["fields"]["Acteurs Culturels"] != undefined) {  
+                            return acc.concat(action["fields"]["Acteurs Culturels"].map(e => { return { school: action["fields"]["UAI"][0], culture: e} }));
+                        } else { 
+                            return acc;
+                        } 
+                    }, Array.from([]));
+                    
+                    showSelectedSchoolLink();
+                }
+            );
+        }
         
-        function showActeurCulturel(acteurs) {
+        function showActeurCulturel() {
 			var card = document.getElementsByClassName("galery__card")[0];
-			var newCards = acteurs.map(function (acteur) {
+			var newCards = acteursCulturels.map(function (acteur) {
 				var newCard = card.cloneNode(true);
                 Array.from(newCard.children).forEach(function (child) {
                     if (child.className == "galery__card__image") {
-                        var type = acteur[2].split(",")[0];
+                        var type = (acteur["fields"]["Type"] || [""])[0];
+                        type = type.split(",")[0];
                         var icon = "museum";
                         if(type == "Théâtre") {
                             icon = "theatre-mask";
@@ -386,11 +404,12 @@
                         }
                         child.style["background-image"] = "url(images/icons/"+icon+"-filled-50.png)";
                     } else if(child.className == "galery__card__title") {
-                        child.innerHTML = acteur[0];
+                        child.innerHTML = acteur["fields"]["Nom"];                    
                     } else if(child.className == "galery__card__description") {
-                        child.innerHTML = acteur[1];
+                        child.innerHTML = acteur["fields"]["Description"] || "";
                     } else if(child.className == "galery__card__bottom") {
-                        child.innerHTML = "25 projets EAC avec 15 écoles";
+                        var totalSchool = (new Set(acteur["fields"]["Ecoles"])).size;
+                        child.innerHTML = acteur["fields"]["Total Action"]+" projets EAC avec "+totalSchool+" écoles";
                     }
                 });
                 return newCard;
