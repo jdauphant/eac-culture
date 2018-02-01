@@ -162,7 +162,6 @@
 
 .galery__card__title {
     position: relative;
-    display: inline-block;
     width: 100%;
     margin: 0px;
     color: white;
@@ -175,15 +174,15 @@
     padding: 8px 60px 8px 70px;
     box-sizing: border-box;
     height: 53px; 
-    
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 
 .galery__card__description {
     position: relative;
-    display: inline-block;
-    margin: 10px !important;
-    padding: 0px;
+    padding: 10px;
+    margin: 0px;
     text-align: left;
     color: #555;
     font-size: 15px;
@@ -219,21 +218,24 @@
     border-radius: 50%;
     text-align: center;
     font-weight: bold; 
-    border: 1px solid #666;
-    background-color: #60ADD9;
     color: white;
     font-size: 32px;
     font-weight: bold;
+    background-color: white;
 }
-.icon__label--college {
+.icon__label--selected-college {
     background-color: #53205D;
 }
-.icon__label--orange {
-    background-color: rgba(217, 133, 59, 0.7);
+
+.icon__label--college {
+    color: #53205D;
+    border: 5px solid #53205D;
 }
-.icon__label--green {
-    background-color: rgba(168, 205, 27, 0.9);
+
+.icon__label--blue {
+    background-color: #0081CB;
 }
+
 .icon__label--no-border {
      border: none;
 }
