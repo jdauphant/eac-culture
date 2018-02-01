@@ -88,8 +88,37 @@
         var links = [];
 
         var linksLayerGroup = L.layerGroup();
-
         linksLayerGroup.addTo(map);
+        var linksSelectedSchoolLayerGroup = L.layerGroup();
+        linksSelectedSchoolLayerGroup.addTo(map);
+        var cultureLayerGroup = L.layerGroup();
+        cultureLayerGroup.addTo(map);
+        var schoolLayerGroup = L.layerGroup();
+        schoolLayerGroup.addTo(map);
+
+        function refreshIconsSize() {
+            changeSizeLayerGroup(cultureLayerGroup);
+            changeSizeLayerGroup(schoolLayerGroup);
+        }
+        function changeSizeLayerGroup(layerGroup) {
+            var currentZoom = map.getZoom();
+            layerGroup.eachLayer(function(marker){
+                var icon = marker._icon
+                if (currentZoom < 14 ) {
+                    icon.style.width="25px";
+                    icon.style.height="25px";
+                    icon.classList.add("icon__label--small");
+                } else {
+                    icon.style.width="50px";
+                    icon.style.height="50px";
+                    icon.classList.remove("icon__label--small");
+                }
+            })
+        }
+
+        map.on('zoomend', function() {
+            refreshIconsSize();
+        });
 
         function showLinksSchool(schoolUAI) {
             return function() {
@@ -135,25 +164,34 @@
             linksLayerGroup.clearLayers();
         }
         
+   
+        function showSelectedSchoolLink() {
+            linksSelectedSchoolLayerGroup.clearLayers();
+            links.forEach(function(element) {
+                    var school = searchEtablissement(element.school);
+                    var culturalActor = searchActeurCulturels(element.culture);
+                    if(school != undefined && culturalActor != undefined && school[0] === selectedSchool[0])  {
+                        var coord1 = { lat: school[11], lng: school[12]};
+                        if(culturalActor[5] != undefined && culturalActor[6] != undefined && culturalActor[5] != 0 && culturalActor[6] != 0) {
+                            var coord2 = { lat: culturalActor[5], lng: culturalActor[6]};
+                            var polyline = L.polyline([coord1, coord2], {
+                                color: 'blue',
+                                weight: 5,
+                                opacity: 0.1,
+                            })
+                            linksSelectedSchoolLayerGroup.addLayer(polyline);
+                        }
+                        
+                    }
+                });
+        }
+
         var etablissementsRequest = {};
         
         var etablissements = [];
-        var selectedSchool;
-        // Etablissements
-        var etablissementsRequestRequest = new XMLHttpRequest();
-        etablissementsRequestRequest.open('GET', 'data-colleges-vienne/Etablissements-Grid view.csv', true); 
-        etablissementsRequestRequest.onload = function() {
-            if (etablissementsRequestRequest.status >= 200 && etablissementsRequestRequest.status < 400) {
-                
-                // Success!
-                var data = CSVToArray(etablissementsRequestRequest.responseText, ",");
-                etablissements = Array.from(data);
-                etablissements.shift();
-                selectedSchool = etablissements.filter(school => school[0] === "0861071X")[0];
-                acteursCulturelsRequestRequest.send();
-                
-               
-                etablissements.forEach(function(element) {
+
+        function showSchools() {
+            etablissements.forEach(function(element) {
                     var lat = Number(element[11]);
                     var lon = Number(element[12]);
                     if(lat != 0 && lon != 0) {
@@ -174,12 +212,42 @@
                             });
                         }
                         var marker = L.marker(latLng, {icon: icon});
-                        marker.bindPopup("<b>"+element[1]+"</b>");
+                        marker.bindPopup("<b>"+element[1]+"</b>",
+                        {  closeButton: false });
+                        marker.on('mouseover', function (e) {
+                            this.openPopup();
+                        });
+                        marker.on('mouseout', function (e) {
+                            this.closePopup();
+                        });
+
                         marker.on("mouseover", showLinksSchool(element[0]));
                         marker.on("mouseout", cleanLink);
-                        marker.addTo(map);
+                        marker.on("click", function (e) {
+                            schoolLayerGroup.clearLayers();
+                            selectedSchool = element;
+                            showSchools();
+                            showSelectedSchoolLink();
+                        });
+                        schoolLayerGroup.addLayer(marker);
                     }
                 });
+        }
+        var selectedSchool;
+        // Etablissements
+        var etablissementsRequestRequest = new XMLHttpRequest();
+        etablissementsRequestRequest.open('GET', 'data-colleges-vienne/Etablissements-Grid view.csv', true); 
+        etablissementsRequestRequest.onload = function() {
+            if (etablissementsRequestRequest.status >= 200 && etablissementsRequestRequest.status < 400) {
+                
+                // Success!
+                var data = CSVToArray(etablissementsRequestRequest.responseText, ",");
+                etablissements = Array.from(data);
+                etablissements.shift();
+                selectedSchool = etablissements.filter(school => school[0] === "0861071X")[0];
+                acteursCulturelsRequestRequest.send();
+                
+                showSchools();
             } else {
             }
         };
@@ -243,10 +311,17 @@
                             });
                         }
                         var marker = L.marker({ lat: lat, lng: lon}, {icon: icon});
-                        marker.bindPopup("<b>"+element[0]+"</b>");
+                        marker.bindPopup("<b>"+element[0]+"</b>",
+                        {  closeButton: false });
+                        marker.on('mouseover', function (e) {
+                            this.openPopup();
+                        });
+                        marker.on('mouseout', function (e) {
+                            this.closePopup();
+                        });
                         marker.on("mouseover", showLinksCulture(element[0]));
                         marker.on("mouseout", cleanLink);
-                        marker.addTo(map);
+                        cultureLayerGroup.addLayer(marker);
                     }
                 });
                 
@@ -265,7 +340,8 @@
                 return element[0] === name;
             })[0];
         }
-        
+     
+
         // Projects
         var projetEACRequest = new XMLHttpRequest();
         projetEACRequest.open('GET', 'data-colleges-vienne/Actions-Grid view.csv', true); 
@@ -285,24 +361,7 @@
                     } 
                 }, Array.from([]));
                 
-                links.forEach(function(element) {
-                    var school = searchEtablissement(element.school);
-                    var culturalActor = searchActeurCulturels(element.culture);
-                    if(school != undefined && culturalActor != undefined && school[0] === selectedSchool[0])  {
-                        var coord1 = { lat: school[11], lng: school[12]};
-                        if(culturalActor[5] != undefined && culturalActor[6] != undefined && culturalActor[5] != 0 && culturalActor[6] != 0) {
-                            var coord2 = { lat: culturalActor[5], lng: culturalActor[6]};
-                            var polyline = L.polyline([coord1, coord2], {
-                                color: 'blue',
-                                weight: 5,
-                                opacity: 0.1,
-                            })
-                            .addTo(map);
-                        }
-                        
-                    }
-                });
-                
+                showSelectedSchoolLink();
             } else {
             }
         };

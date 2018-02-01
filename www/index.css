@@ -222,6 +222,7 @@
     font-size: 32px;
     font-weight: bold;
     background-color: white;
+    box-sizing: border-box;
 }
 .icon__label--selected-college {
     background-color: #53205D;
@@ -230,6 +231,11 @@
 .icon__label--college {
     color: #53205D;
     border: 5px solid #53205D;
+    font-size: 28px;
+}
+
+.icon__label--college:hover {
+    background-color: rgb(216, 216, 216);
 }
 
 .icon__label--blue {
@@ -240,6 +246,12 @@
      border: none;
 }
 .icon__label--small {
-     font-size: 0;
-     opacity: 0.9;
+     font-size: 17px;
+     opacity: 0.8;
+     top: 12px;
+     left: 12px;
+}
+.icon__label--college.icon__label--small {
+    border-width: 3px;
+    font-size: 14px;
 }
