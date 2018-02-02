@@ -25,6 +25,43 @@
     box-shadow: 0 1px 1px 0 rgba(183,183,183,0.5);
 }
 
+.header__search {
+    height: 44px;	
+    width: 499px;
+    position: absolute;
+    top: 20px;
+    left: 50%;
+}
+
+.header__search__input {
+    position: relative;
+    height: 44px;	
+    width: 426px;	
+    border: 1px solid #DEE3EA;	
+    border-radius: 100px 0px 0px 100px;
+    left: -50%;
+    box-sizing: border-box;
+    padding-left: 25px;
+    font-size: 18px;
+
+}
+.header__search__button {
+    position: relative;
+    display: block;
+    height: 44px;	
+    width: 63px;	
+    top: -100%;
+    left: calc( -50% + 426px );
+    border-radius: 0px 100px 100px 0px;	
+    background-color: #0081CB;	
+    background-image: url("images/icons/ic_search.png");
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: 22px;
+    font-family: 'Nunito', sans-serif;
+    border: none;
+}
+
 .header__image {
     position: absolute;
     top: -21px;
