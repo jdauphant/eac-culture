@@ -29,7 +29,7 @@
     height: 44px;	
     width: 499px;
     position: absolute;
-    top: 20px;
+    top: 26px;
     left: 50%;
 }
 
@@ -148,7 +148,7 @@
     padding: 0px;
     width: 274px;
     height: 234px;
-    border-radius: 2px;
+    border-radius: 5px;
     display: inline-block;
     vertical-align: top;
     background-color: white;
@@ -156,6 +156,7 @@
     box-shadow: 0 5px 12px 0 rgba(69,69,69,0.23);
     font-family: "Helvetica", "Arial", sans-serif;
     line-height: 1.3;
+    overflow: hidden;
 }
 
 .galery__card--clickable {
@@ -179,12 +180,13 @@
 .galery__card__favorite {
     position: absolute;
     top: 0px;
-    right: 15px;
+    right: 12px;
     width: 33px;
     height: 42px;
     background-image: url("images/vignette.png");
     z-index: 99;
 }
+
 .galery__card__favorite::after {
     content: "";
     position: absolute;
@@ -192,10 +194,15 @@
     right: 6px;
     width: 22px;
     height: 22px;
-    background-image: url("images/icons/star-filled-50.png");
+    background-image: url("images/icons/add-to-favorites-50.png");
     background-repeat: no-repeat;
     background-size: 100%;
 }
+
+.galery__card__favorite--favorite.galery__card__favorite::after {
+    background-image: url("images/icons/star-filled-50.png") !important;
+}
+
 
 .galery__card__title {
     position: relative;
@@ -205,10 +212,10 @@
     text-align: left;
     background-color: #0081CB;
     font-family: 'Nunito', sans-serif;
-    font-size: 16px;	
+    font-size: 15px;	
     font-weight: 600;	
     line-height: 19px;
-    padding: 8px 60px 8px 70px;
+    padding: 8px 50px 8px 70px;
     box-sizing: border-box;
     height: 53px; 
     overflow: hidden;
@@ -218,13 +225,15 @@
 
 .galery__card__description {
     position: relative;
-    padding: 10px;
+    padding: 13px;
     margin: 0px;
     text-align: left;
     color: #555;
-    font-size: 15px;
+    font-size: 14px;
     height: 130px;
-    overflow-x: auto;
+    overflow-x: none;
+    text-align: justify;
+    text-justify: inter-word;
 }
 
 .galery__card__bottom {
@@ -237,12 +246,28 @@
     display: block;
     padding: 8px;
     height: 33px;
-    background: rgba(204, 204, 204, 0.7);
+    background: #F5F5F5;
     box-sizing: border-box;
     font-size: 13px;
     font-weight: 600;
+    padding-right: 57px;
 }
 
+.galery__card__distance {
+    position: absolute;
+    bottom: 0px;
+    right: 0px;
+    width: 50px;
+    padding-top: 9px;
+    height: 33px;
+    margin: 0px;
+    font-weight: bold;
+    z-index: 50;
+    box-sizing: border-box;
+    background-color: #60ADD9;
+    color: white;
+    font-size: 11px;
+}
 
 
 /* 

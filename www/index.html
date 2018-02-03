@@ -59,19 +59,29 @@
         <div class="galery galery--force-scrollbar" id="galery">
             <div class="galery__card galery__card--clickable">
                 <div class="galery__card__image" style="background-image: url('images/icons/music-conductor-filled-50.png')"></div>
-                <div class="galery__card__favorite"></div>
+                <div class="galery__card__favorite"  onclick="favorite(this);"></div>
                 <h2 class="galery__card__title">Orchestre national d'Île-de-France</h2>
                 <p class="galery__card__description">Formation symphonique de notoriété internationale, l'Orchestre national d'Île-de-France propose une centaine de concerts par an. Sa mission : la diffusion du répertoire symphonique en Île-de-France.
                 </p>
                 <div class="galery__card__bottom">
                     12 projets EAC avec 3 établissements scolaires
                 </div>
+                <div class="galery__card__distance">à 10 km</div>
             </div>  
         </div>
         <div id="map">
         </div>
     </div>
     <script>
+
+        function favorite(sender) {
+            if(sender.classList.contains("galery__card__favorite--favorite")) {
+                sender.classList.remove("galery__card__favorite--favorite");
+            } else {
+                sender.classList.add("galery__card__favorite--favorite");
+            }
+        }
+
         var center = {lat: 46.57886370185589, lng: 0.3578281402587891};
         
         // Map
@@ -329,7 +339,7 @@
                             });
                         }
                         var marker = L.marker({ lat: Number(lat), lng: Number(lon)}, {icon: icon, riseOnHover: true});
-                        marker.bindPopup("<b>"+culture["fields"]["Nom"]+"</b>",
+                        marker.bindPopup("<b>"+culture["fields"]["Nom"]+"</b><br><br>A effectués des projets avec 10 écoles <br><br><button>Test</button>",
                         {  closeButton: false });
                         marker.on('mouseover', function (e) {
                             this.openPopup();
