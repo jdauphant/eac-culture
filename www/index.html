@@ -22,6 +22,7 @@
             height: 100%; 
             margin: 0; 
             padding: 0;
+            overflow: hidden;
         }
         #map {
             height: 100%;
@@ -33,6 +34,10 @@
             padding: 5px;
             top: 10px;
             left: 55px;
+        }
+
+        .leaflet-popup-content-wrapper {
+            border-radius: 4px !important;
         }
     </style>
     
@@ -227,14 +232,14 @@
                             });
                         }
                         var marker = L.marker(latLng, {icon: icon, riseOnHover: true});
-                        marker.bindPopup("<b>"+school["fields"]["appellation_officielle"]+"</b>",
-                        {  closeButton: false });
+                        marker.bindPopup("<b>"+school["fields"]["appellation_officielle"]+"</b>");
                         marker.on('mouseover', function (e) {
                             this.openPopup();
                         });
+                        /*
                         marker.on('mouseout', function (e) {
                             this.closePopup();
-                        });
+                        });*/
 
                         marker.on("mouseover", showLinksSchool(school["id"]));
                         marker.on("mouseout", cleanLink);
@@ -243,6 +248,7 @@
                             selectedSchool = school;
                             showSchools();
                             showSelectedSchoolLink();
+                            showActeurCulturel();
                         });
                         schoolLayerGroup.addLayer(marker);
                     }
@@ -339,14 +345,15 @@
                             });
                         }
                         var marker = L.marker({ lat: Number(lat), lng: Number(lon)}, {icon: icon, riseOnHover: true});
-                        marker.bindPopup("<b>"+culture["fields"]["Nom"]+"</b><br><br>A effectués des projets avec 10 écoles <br><br><button>Test</button>",
-                        {  closeButton: false });
+                        var totalSchool = (new Set(culture["fields"]["Ecoles"])).size;
+                        marker.bindPopup("<b>"+culture["fields"]["Nom"]+"</b><br><br>A effectués "+culture["fields"]["Total Action"]+" projets EAC avec "+totalSchool+" écoles"+" <br><br><button class='map__popup__button'>Voir plus d'infos</button>");
                         marker.on('mouseover', function (e) {
                             this.openPopup();
                         });
+                        /*
                         marker.on('mouseout', function (e) {
                             this.closePopup();
-                        });
+                        });*/
                         marker.on("mouseover", showLinksCulture(culture["id"]));
                         marker.on("mouseout", cleanLink);
                         cultureLayerGroup.addLayer(marker);
@@ -397,11 +404,17 @@
                 }
             );
         }
+
+
         
         function showActeurCulturel() {
 			var card = document.getElementsByClassName("galery__card")[0];
+            var latLngSchool = {lat: selectedSchool["fields"]["latitude"], lng: selectedSchool["fields"]["longitude"]};
 			var newCards = acteursCulturels.map(function (acteur) {
 				var newCard = card.cloneNode(true);
+                var latLngActeur = {lat: acteur["fields"]["latitude"], lng: acteur["fields"]["longitude"]};
+                var distance = Math.round(map.distance(latLngSchool, latLngActeur)/1000);
+                newCard.dataset.distance = distance;
                 Array.from(newCard.children).forEach(function (child) {
                     if (child.className == "galery__card__image") {
                         var type = (acteur["fields"]["Type"] || [""])[0];
@@ -424,12 +437,15 @@
                     } else if(child.className == "galery__card__bottom") {
                         var totalSchool = (new Set(acteur["fields"]["Ecoles"])).size;
                         child.innerHTML = acteur["fields"]["Total Action"]+" projets EAC avec "+totalSchool+" écoles";
+                    } else if(child.className == "galery__card__distance") {
+                        child.innerHTML = "à "+distance+" km";
                     }
                 });
                 return newCard;
             });
+            newCards.sort((a,b) => a.dataset.distance - b.dataset.distance);
             var galery = document.getElementById("galery");
-            galery.removeChild(card);
+            galery.innerHTML="";
 			newCards.forEach(function (card) {
 				galery.appendChild(card);
 			});

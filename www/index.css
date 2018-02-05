@@ -80,17 +80,14 @@
 }
 
 .header__avatar {
-    background: rgba(103, 182, 235, 1);
-    background-image: url("images/icons/male-user-filled-50.png") !important;
-}
-
-.header__avatar:hover {
-    background: rgb(0, 90, 138);
+    background-image: url("images/avatar.png") !important;
+    background-size: 47px;
+    margin-right: 10px;
 }
 
 .header__favorites {
     -webkit-mask-image: url("images/icons/star-filled-50.png");
-    -webkit-mask-size: 35%;
+    -webkit-mask-size: 35px;
     -webkit-mask-repeat: no-repeat;
     -webkit-mask-position: center;
     background-color: #0081CB;
@@ -105,7 +102,7 @@
     background-repeat: no-repeat !important;
     background-position: center !important;
     height: 100%;
-    width: 94px;
+    width: 70px;
     float: right;
 }
 
@@ -258,7 +255,7 @@
     bottom: 0px;
     right: 0px;
     width: 50px;
-    padding-top: 9px;
+    padding-top: 10px;
     height: 33px;
     margin: 0px;
     font-weight: bold;
@@ -266,7 +263,7 @@
     box-sizing: border-box;
     background-color: #60ADD9;
     color: white;
-    font-size: 11px;
+    font-size: 10px;
 }
 
 
@@ -318,4 +315,17 @@
 .icon__label--college.icon__label--small {
     border-width: 3px;
     font-size: 14px;
+}
+
+.map__popup__button {
+    border-radius: 100px;	
+    background-color: #0081CB;	
+    text-transform: uppercase;
+    color: white;
+    font-family: 'Nunito', sans-serif;
+    text-align: center;
+    padding: 9px 15px 9px 15px;
+    font-weight: 800;
+    border: none;
+    font-size: 11px;
 }
