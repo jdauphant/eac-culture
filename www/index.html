@@ -232,7 +232,7 @@
                             });
                         }
                         var marker = L.marker(latLng, {icon: icon, riseOnHover: true});
-                        marker.bindPopup("<b>"+school["fields"]["appellation_officielle"]+"</b>");
+                        marker.bindPopup("<b>"+school["fields"]["appellation_officielle"]+"</b><br>UAI: "+school["fields"]["numero_uai"]);
                         marker.on('mouseover', function (e) {
                             this.openPopup();
                         });
@@ -303,7 +303,7 @@
             schoolTable => {
                 console.log("Nb écoles: "+schoolTable["records"].length);
                 schools = schoolTable["records"];
-                selectedSchool = schools.filter(school => school["fields"]["numero_uai"] === "0861071X")[0];
+                selectedSchool = schools.filter(school => school["fields"]["numero_uai"] === "0860040B")[0];
                 updateActor();
                 showSchools();
             }
@@ -435,8 +435,14 @@
                     } else if(child.className == "galery__card__description") {
                         child.innerHTML = acteur["fields"]["Description"] || "";
                     } else if(child.className == "galery__card__bottom") {
-                        var totalSchool = (new Set(acteur["fields"]["Ecoles"])).size;
-                        child.innerHTML = acteur["fields"]["Total Action"]+" projets EAC avec "+totalSchool+" écoles";
+                        if(acteur["fields"]["Ecoles"].indexOf(selectedSchool["id"]) != -1) {
+                            var totalEAC = acteur["fields"]["Ecoles"].filter(e => e === selectedSchool["id"]).length;
+                            child.innerHTML = "Déjà "+totalEAC+" projets avec ce collège";
+                            child.classList.add("galery__card__bottom--green");
+                        } else {
+                            var totalSchool = (new Set(acteur["fields"]["Ecoles"])).size;
+                            child.innerHTML = acteur["fields"]["Total Action"]+" projets EAC avec "+totalSchool+" écoles";
+                        }
                     } else if(child.className == "galery__card__distance") {
                         child.innerHTML = "à "+distance+" km";
                     }

@@ -249,6 +249,9 @@
     font-weight: 600;
     padding-right: 57px;
 }
+.galery__card__bottom--green {
+    color: #247F17;
+}
 
 .galery__card__distance {
     position: absolute;
