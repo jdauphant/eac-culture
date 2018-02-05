@@ -63,10 +63,6 @@
                 <label for="Cinéma">Cinéma</label>
             </div>
             <div class="filters__filter">
-                <input type="checkbox" id="Histoire" checked/>
-                <label for="Histoire">Histoire</label>
-            </div>
-            <div class="filters__filter">
                     <input type="checkbox" id="Musée" checked/>
                     <label for="Musée">Musée</label>
                 </div>
@@ -78,6 +74,11 @@
                     <input type="checkbox" id="Théâtre" checked/>
                     <label for="Théâtre">Théâtre</label>
                 </div>
+
+                <div class="filters__filter">
+                        <input type="checkbox" id="Autre" checked/>
+                        <label for="Autre">Autre</label>
+                    </div>
                 <div class="filters__links">
                 <a href="#" onclick="selectAllFilters()">Tous</a> / <a href="#" onclick="unselectAllFilters()">Aucun</a>
                 </div>
@@ -353,7 +354,18 @@
         // ActeursCulturelles
         var acteursCulturels = [];
         function showCulture() {
-            acteursCulturels.forEach(function(culture) {
+            cultureLayerGroup.clearLayers();
+            var actors = acteursCulturels;
+            /*if(searchTerm.length > 2) {
+                actors = actors.filter(e => e.innerText.normalize('NFD').replace(/[\u0300-\u036f]/g, "").indexOf(searchTerm) != -1);
+            }*/
+            var filteredTypes = Array.from(document.querySelectorAll("#filters input[type='checkbox']:checked")).map(e => e.id)
+            if(filteredTypes.length != document.querySelectorAll("#filters input[type='checkbox']").length) {
+                actors = actors.filter(actor => actor["fields"]["Type"].reduce(
+                   (acc, type) => acc || filteredTypes.indexOf(type) != -1 , false
+                ));
+            }
+            actors.forEach(function(culture) {
                 var lat = culture["fields"]["latitude"];
                 var lon = culture["fields"]["longitude"];
                 if(lat != undefined && lon != undefined) {
@@ -551,6 +563,7 @@
             input => 
                 input.addEventListener("click", event => {
                     showActeurCulturel();
+                    showCulture();
                 })
         );
         
@@ -558,12 +571,14 @@
             history.replaceState(null,null,location.href.split('#')[0]); 
             document.querySelectorAll("#filters input[type='checkbox']").forEach( input => input.checked = false );
             showActeurCulturel();
+                    showCulture();
         }
 
         function selectAllFilters(){
             history.replaceState(null,null,location.href.split('#')[0]); 
             document.querySelectorAll("#filters input[type='checkbox']").forEach( input => input.checked = true );   
-            showActeurCulturel();   
+            showActeurCulturel();  
+                    showCulture(); 
         }
     </script>
 </body>

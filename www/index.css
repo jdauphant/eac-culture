@@ -42,6 +42,7 @@
     text-align: center;
     padding: 8px 15px 8px 42px;
     color: white;
+    user-select: none;
 }
 
 .filters__filter label::before {
