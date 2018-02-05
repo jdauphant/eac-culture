@@ -48,7 +48,7 @@
         <div class="header__image">
         </div>
         <div class="header__search">
-            <input class="header__search__input" placeholder="Saisir une recherche..."/>
+            <input type="search" class="header__search__input" placeholder="Saisir une recherche..." id="search-input" onsearch="onSearch()" onkeydown="onSearch()" onkeypress="onSearch()"/>
             <button class="header__search__button"></button>
         </div>
         <div class="header__avatar">
@@ -61,7 +61,7 @@
 
     </div>
     <div class="main">
-        <div class="galery galery--force-scrollbar" id="galery">
+        <div id="galery-template" style="display: none;">
             <div class="galery__card galery__card--clickable">
                 <div class="galery__card__image" style="background-image: url('images/icons/music-conductor-filled-50.png')"></div>
                 <div class="galery__card__favorite"  onclick="favorite(this);"></div>
@@ -73,6 +73,9 @@
                 </div>
                 <div class="galery__card__distance">à 10 km</div>
             </div>  
+        </div>
+        <div class="galery galery--force-scrollbar" id="galery">
+            
         </div>
         <div id="map">
         </div>
@@ -405,7 +408,11 @@
             );
         }
 
-
+        var searchTerm = "";
+        function onSearch() {
+            searchTerm = document.getElementById("search-input").value.normalize('NFD').replace(/[\u0300-\u036f]/g, "");
+            showActeurCulturel();
+        }
         
         function showActeurCulturel() {
 			var card = document.getElementsByClassName("galery__card")[0];
@@ -413,7 +420,7 @@
 			var newCards = acteursCulturels.map(function (acteur) {
 				var newCard = card.cloneNode(true);
                 var latLngActeur = {lat: acteur["fields"]["latitude"], lng: acteur["fields"]["longitude"]};
-                var distance = Math.round(map.distance(latLngSchool, latLngActeur)/1000);
+                var distance = Math.round(map.distance(latLngSchool, latLngActeur));
                 newCard.dataset.distance = distance;
                 Array.from(newCard.children).forEach(function (child) {
                     if (child.className == "galery__card__image") {
@@ -444,12 +451,21 @@
                             child.innerHTML = acteur["fields"]["Total Action"]+" projets EAC avec "+totalSchool+" écoles";
                         }
                     } else if(child.className == "galery__card__distance") {
-                        child.innerHTML = "à "+distance+" km";
+                        if(distance > 10000) {
+                            child.innerHTML = "à "+Math.round(distance/1000)+" km";
+                        } else if(distance > 1000) {
+                            child.innerHTML = "à "+Math.round(distance/100)/10+" km";
+                        } else {
+                            child.innerHTML = "à "+Math.round(distance/10)*10+" m";
+                        }
                     }
                 });
                 return newCard;
             });
-            newCards.sort((a,b) => a.dataset.distance - b.dataset.distance);
+            var newCards = newCards.sort((a,b) => a.dataset.distance - b.dataset.distance);
+            if(searchTerm.length > 2) {
+                var newCards = newCards.filter(e => e.innerText.normalize('NFD').replace(/[\u0300-\u036f]/g, "").indexOf(searchTerm) != -1);
+            }
             var galery = document.getElementById("galery");
             galery.innerHTML="";
 			newCards.forEach(function (card) {
