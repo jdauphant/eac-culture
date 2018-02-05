@@ -124,7 +124,7 @@
             changeSizeLayerGroup(schoolLayerGroup);
         }
         function changeSizeLayerGroup(layerGroup) {
-            var currentZoom = map.getZoom();
+          /*  var currentZoom = map.getZoom();
             layerGroup.eachLayer(function(marker){
                 var icon = marker._icon
                 if (currentZoom < 14 ) {
@@ -136,7 +136,7 @@
                     icon.style.height="50px";
                     icon.classList.remove("icon__label--small");
                 }
-            })
+            })*/
         }
 
         map.on('zoomend', function() {
@@ -337,14 +337,18 @@
                         if(iconType != "") {
                             icon = L.divIcon({
                                 html: "<img src='images/icons/"+iconType+"-filled-50.png' style='width: 50%; margin:25%;'>", 
-                                className: 'icon__label icon__label--blue',
-                                iconSize: [50,50]
+                                className: 'icon__label icon__label--culture',
+                                iconSize: [61,85],
+                                iconAnchor: [30, 80],
+                                popupAnchor: [0, -65]
                             });
                         } else {
                             icon = L.divIcon({
                                 html: "A", 
-                                className: 'icon__label icon__label--blue',
-                                iconSize: [50,50]
+                                className: 'icon__label icon__label--culture',
+                                iconSize: [61,85],
+                                iconAnchor: [30, 80],
+                                popupAnchor: [0, -65]
                             });
                         }
                         var marker = L.marker({ lat: Number(lat), lng: Number(lon)}, {icon: icon, riseOnHover: true});

@@ -298,12 +298,18 @@
     font-size: 28px;
 }
 
-.icon__label--college:hover {
-    background-color: rgb(216, 216, 216);
+.icon__label--culture {
+    background-image: url("images/pin-culture.png");
+    background-position: center;
+    background-size: 100%;
+    background-color: initial;
+    background-repeat: no-repeat;
+    box-sizing: content-box;
+    border-radius: initial;
 }
 
-.icon__label--blue {
-    background-color: #0081CB;
+.icon__label--college:hover {
+    background-color: rgb(216, 216, 216);
 }
 
 .icon__label--no-border {
