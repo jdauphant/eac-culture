@@ -35,10 +35,6 @@
             top: 10px;
             left: 55px;
         }
-
-        .leaflet-popup-content-wrapper {
-            border-radius: 4px !important;
-        }
     </style>
     
 </head>
@@ -57,8 +53,35 @@
         <div class="header__favorites">
         </div>
     </div>
-    <div class="filter">
-
+    <div class="filters" id="filters">
+        <div class="filters__filter">
+                <input type="checkbox" id="Bibliothèque/Médiathèque" checked/>
+                <label for="Bibliothèque/Médiathèque">Bibliothèque/Médiathèque</label>
+            </div>
+        <div class="filters__filter">
+                <input type="checkbox" id="Cinéma" checked/>
+                <label for="Cinéma">Cinéma</label>
+            </div>
+            <div class="filters__filter">
+                <input type="checkbox" id="Histoire" checked/>
+                <label for="Histoire">Histoire</label>
+            </div>
+            <div class="filters__filter">
+                    <input type="checkbox" id="Musée" checked/>
+                    <label for="Musée">Musée</label>
+                </div>
+                <div class="filters__filter">
+                    <input type="checkbox" id="Musique" checked/>
+                    <label for="Musique">Musique</label>
+                </div>
+                <div class="filters__filter">
+                    <input type="checkbox" id="Théâtre" checked/>
+                    <label for="Théâtre">Théâtre</label>
+                </div>
+                <div class="filters__links">
+                <a href="#" onclick="selectAllFilters()">Tous</a> / <a href="#" onclick="unselectAllFilters()">Aucun</a>
+                </div>
+        
     </div>
     <div class="main">
         <div id="galery-template" style="display: none;">
@@ -124,19 +147,21 @@
             changeSizeLayerGroup(schoolLayerGroup);
         }
         function changeSizeLayerGroup(layerGroup) {
-          /*  var currentZoom = map.getZoom();
+            var currentZoom = map.getZoom();
             layerGroup.eachLayer(function(marker){
                 var icon = marker._icon
-                if (currentZoom < 14 ) {
-                    icon.style.width="25px";
-                    icon.style.height="25px";
-                    icon.classList.add("icon__label--small");
-                } else {
-                    icon.style.width="50px";
-                    icon.style.height="50px";
-                    icon.classList.remove("icon__label--small");
+                if(icon.classList.contains("icon__label--circle")) {
+                    if (currentZoom < 16 ) {
+                        icon.style.width="25px";
+                        icon.style.height="25px";
+                        icon.classList.add("icon__label--small");
+                    } else {
+                        icon.style.width="50px";
+                        icon.style.height="50px";
+                        icon.classList.remove("icon__label--small");
+                    }
                 }
-            })*/
+            })
         }
 
         map.on('zoomend', function() {
@@ -223,19 +248,21 @@
                         if(school["fields"]["numero_uai"] === selectedSchool["fields"]["numero_uai"]) {
                             icon = L.divIcon({
                                 html: "C", 
-                                className: 'icon__label icon__label--selected-college',
+                                className: 'icon__label icon__label--selected-college icon__label--circle',
                                 iconSize: [50,50]
                             });
                             map.flyTo(latLng, 15);
                         } else {
                             icon = L.divIcon({
                                 html: "C", 
-                                className: 'icon__label icon__label--college',
+                                className: 'icon__label icon__label--college icon__label--circle ',
                                 iconSize: [50,50]
                             });
                         }
                         var marker = L.marker(latLng, {icon: icon, riseOnHover: true});
-                        marker.bindPopup("<b>"+school["fields"]["appellation_officielle"]+"</b><br>UAI: "+school["fields"]["numero_uai"]);
+                        var popup = L.popup({ className: "map__popup"})
+                        .setContent("<span class='map__popup__title'>"+school["fields"]["appellation_officielle"]+"</span><br>UAI: "+school["fields"]["numero_uai"]);
+                        marker.bindPopup(popup);
                         marker.on('mouseover', function (e) {
                             this.openPopup();
                         });
@@ -312,6 +339,17 @@
             }
         )
         
+        function showCard(cardId) {
+            var url = location.href;
+            location.href = "#"+cardId;
+            history.replaceState(null,null,url); 
+            document.getElementById(cardId).classList.add("galery__card--selected");
+            setTimeout(function () {
+                document.getElementById(cardId).classList.remove("galery__card--selected");
+            }, 300);
+        }
+
+
         // ActeursCulturelles
         var acteursCulturels = [];
         function showCulture() {
@@ -352,15 +390,36 @@
                             });
                         }
                         var marker = L.marker({ lat: Number(lat), lng: Number(lon)}, {icon: icon, riseOnHover: true});
+                        
+
+                        var cardId = "card_"+culture["id"];
                         var totalSchool = (new Set(culture["fields"]["Ecoles"])).size;
-                        marker.bindPopup("<b>"+culture["fields"]["Nom"]+"</b><br><br>A effectués "+culture["fields"]["Total Action"]+" projets EAC avec "+totalSchool+" écoles"+" <br><br><button class='map__popup__button'>Voir plus d'infos</button>");
+                        var popup = L.popup({ className: "map__popup"})
+                        .setContent("<span class='map__popup__title'>"+culture["fields"]["Nom"]+"</span><br><br>A effectués "+culture["fields"]["Total Action"]+" projets EAC avec "+totalSchool+" écoles"+" <br><br><button class='map__popup__button' onclick='showCard(\""+cardId+"\")'>Voir plus d'infos</button>");
+
+                    
+                        popup.on('mouseover', function (e) {
+                            document.getElementById(cardId).classList.add("galery__card--selected");
+                        }); 
+                        popup.on('popupclose', function (e) {
+                            document.getElementById(cardId).classList.remove("galery__card--selected");
+                        });
+
                         marker.on('mouseover', function (e) {
                             this.openPopup();
+
+                           /* var url = location.href;
+                            location.href = "#"+cardId;
+                            history.replaceState(null,null,url); */
+                            document.getElementById(cardId).classList.add("galery__card--selected");
                         });
-                        /*
+
+                        marker.bindPopup(popup);
+
                         marker.on('mouseout', function (e) {
-                            this.closePopup();
-                        });*/
+                           // this.closePopup();
+                            document.getElementById(cardId).classList.remove("galery__card--selected");
+                        });
                         marker.on("mouseover", showLinksCulture(culture["id"]));
                         marker.on("mouseout", cleanLink);
                         cultureLayerGroup.addLayer(marker);
@@ -426,6 +485,8 @@
                 var latLngActeur = {lat: acteur["fields"]["latitude"], lng: acteur["fields"]["longitude"]};
                 var distance = Math.round(map.distance(latLngSchool, latLngActeur));
                 newCard.dataset.distance = distance;
+                newCard.dataset.types = acteur["fields"]["Type"];
+                newCard.id = "card_"+acteur["id"];
                 Array.from(newCard.children).forEach(function (child) {
                     if (child.className == "galery__card__image") {
                         var type = (acteur["fields"]["Type"] || [""])[0];
@@ -466,17 +527,44 @@
                 });
                 return newCard;
             });
-            var newCards = newCards.sort((a,b) => a.dataset.distance - b.dataset.distance);
+            newCards = newCards.sort((a,b) => a.dataset.distance - b.dataset.distance);
             if(searchTerm.length > 2) {
-                var newCards = newCards.filter(e => e.innerText.normalize('NFD').replace(/[\u0300-\u036f]/g, "").indexOf(searchTerm) != -1);
+                newCards = newCards.filter(e => e.innerText.normalize('NFD').replace(/[\u0300-\u036f]/g, "").indexOf(searchTerm) != -1);
+            }
+            var filteredTypes = Array.from(document.querySelectorAll("#filters input[type='checkbox']:checked")).map(e => e.id)
+            if(filteredTypes.length != document.querySelectorAll("#filters input[type='checkbox']").length) {
+                newCards = newCards.filter(e => e.dataset.types.split(",").reduce(
+                   (acc, type) => acc || filteredTypes.indexOf(type) != -1 , false
+                ));
             }
             var galery = document.getElementById("galery");
             galery.innerHTML="";
 			newCards.forEach(function (card) {
 				galery.appendChild(card);
 			});
+            if(newCards.length == 0) {
+                galery.innerHTML="<br><b>Pas de résultats</b>";
+            }
         }
+
+        document.querySelectorAll("#filters input[type='checkbox']").forEach(
+            input => 
+                input.addEventListener("click", event => {
+                    showActeurCulturel();
+                })
+        );
         
+        function unselectAllFilters(){
+            history.replaceState(null,null,location.href.split('#')[0]); 
+            document.querySelectorAll("#filters input[type='checkbox']").forEach( input => input.checked = false );
+            showActeurCulturel();
+        }
+
+        function selectAllFilters(){
+            history.replaceState(null,null,location.href.split('#')[0]); 
+            document.querySelectorAll("#filters input[type='checkbox']").forEach( input => input.checked = true );   
+            showActeurCulturel();   
+        }
     </script>
 </body>
 </html>
