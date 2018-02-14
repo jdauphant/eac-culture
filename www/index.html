@@ -391,9 +391,11 @@
         function showCulture() {
             cultureLayerGroup.clearLayers();
             var actors = acteursCulturels;
-            /*if(searchTerm.length > 2) {
-                actors = actors.filter(e => e.innerText.normalize('NFD').replace(/[\u0300-\u036f]/g, "").indexOf(searchTerm) != -1);
-            }*/
+            if(searchTerm.length > 2) {
+                actors = actors.filter(e => {
+                    var text = e["fields"]["Nom"]+" "+e["fields"]["Description"];
+                    return text.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "").indexOf(searchTerm) != -1});
+            }
             var filteredTypes = Array.from(document.querySelectorAll("#filters input[type='checkbox']:checked")).map(e => e.id)
             if(filteredTypes.length != document.querySelectorAll("#filters input[type='checkbox']").length) {
                 actors = actors.filter(actor => actor["fields"]["Type"].reduce(
@@ -478,7 +480,7 @@
             getAirtableRecords("Acteurs%20Culturels").then(
                 actorsTable => {
                     console.log("Nb acteurs: "+actorsTable["records"].length);
-                    acteursCulturels = actorsTable["records"].sort((a,b) => b["fields"]["Total Action"] - a["fields"]["Total Action"]);
+                    acteursCulturels = actorsTable["records"].sort((a,b) => b["fields"]["Total Action"] - a["fields"]["Total Action"]).filter(e => e["fields"]["latitude"] != undefined && e["fields"]["longitude"] != undefined);
                     updateActions();
                     showCulture();
                     showActeurCulturel();
@@ -521,8 +523,9 @@
 
         var searchTerm = "";
         function onSearch() {
-            searchTerm = document.getElementById("search-input").value.normalize('NFD').replace(/[\u0300-\u036f]/g, "");
+            searchTerm = document.getElementById("search-input").value.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "");
             showActeurCulturel();
+            showCulture();
         }
         
         function showActeurCulturel() {
@@ -578,7 +581,7 @@
             });
             newCards = newCards.sort((a,b) => a.dataset.distance - b.dataset.distance);
             if(searchTerm.length > 2) {
-                newCards = newCards.filter(e => e.innerText.normalize('NFD').replace(/[\u0300-\u036f]/g, "").indexOf(searchTerm) != -1);
+                newCards = newCards.filter(e => e.innerText.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "").indexOf(searchTerm) != -1);
             }
             var filteredTypes = Array.from(document.querySelectorAll("#filters input[type='checkbox']:checked")).map(e => e.id)
             if(filteredTypes.length != document.querySelectorAll("#filters input[type='checkbox']").length) {

@@ -5,10 +5,11 @@
 */
 
 .main {
-    height: calc(100% - 160px); 
-    margin: 0; 
+    height: calc(100% - 165px);
+    margin: 0;
     padding: 0;
     position: relative;
+    margin-top: -4px;
 }
 
 .filters {
