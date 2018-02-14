@@ -72,7 +72,7 @@
                         <input type="checkbox" id="Autre" checked/>
                         <label for="Autre">Autre</label>
                     </div>
-                <div class="filters__links">
+                <div class="filters__links noselect" style="padding: 0px; padding-top: 12px;">
                 <a href="#" onclick="selectAllFilters()">Tous</a> / <a href="#" onclick="unselectAllFilters()">Aucun</a>
                 </div>
         
@@ -96,7 +96,7 @@
                             <tr>
                                 <th>Nom de l'action</th>
                                 <th>Etablissement</th>
-                                <th>Total d'élèves</th>
+                                <th style="width: 90px;">Total d'élèves</th>
                             </tr>
                         </thead>
                         <tfoot>
@@ -412,11 +412,11 @@
                             iconType = "theatre-mask";
                         } else if(type == "Cinéma" ) {
                             iconType = "movie";
-                        } else if(type != "Musée") {
+                        } else if(type == "Musée") {
                             iconType = "museum";
-                        } else if(type != "Bibliothèque/Médiathèque") {
+                        } else if(type == "Bibliothèque/Médiathèque") {
                             iconType = "library";
-                        } else if(type != "Musique") {
+                        } else if(type == "Musique") {
                             iconType = "music";
                         }
 
@@ -590,7 +590,7 @@
                 ));
             }
             var galery = document.getElementById("galery");
-            galery.innerHTML="";
+            galery.innerHTML="<h2 class='gallery__titre'>Resultat: "+newCards.length+" acteurs culturels</h2>";
 			newCards.forEach(function (card) {
 				galery.appendChild(card);
 			});

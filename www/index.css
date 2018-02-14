@@ -5,7 +5,7 @@
 */
 
 .main {
-    height: calc(100% - 165px);
+    height: calc(100% - 163px);
     margin: 0;
     padding: 0;
     position: relative;
@@ -17,7 +17,7 @@
     min-height: 68px;	
     background-color: #F5F5F5;
     border-bottom: 1px solid #D4D4D4;
-    padding: 12px 30px 2px 10px;
+    padding: 12px 30px 0px 10px;
     box-sizing: border-box;
     display: inline-block;
 }
@@ -285,7 +285,7 @@
     font-size: 15px;	
     font-weight: 600;	
     line-height: 19px;
-    padding: 8px 50px 8px 70px;
+    padding: 8px 48px 8px 69px;;
     box-sizing: border-box;
     height: 53px; 
     overflow: hidden;
@@ -508,3 +508,13 @@
 .invisible {
     display: none;
 }
+
+.noselect {
+    -webkit-touch-callout: none; /* iOS Safari */
+      -webkit-user-select: none; /* Safari */
+       -khtml-user-select: none; /* Konqueror HTML */
+         -moz-user-select: none; /* Firefox */
+          -ms-user-select: none; /* Internet Explorer/Edge */
+              user-select: none; /* Non-prefixed version, currently
+                                    supported by Chrome and Opera */
+  }
