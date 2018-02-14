@@ -558,8 +558,9 @@
         font-size: 10px;
     }
     .header__image {
-        height: 125px;
-        width: 125px;
+        height: 115px;
+        width: 115px;
+        z-index: 2000;
     }
     .filters__filter:first-of-type {
         margin-left: 160px;
@@ -569,6 +570,8 @@
     }
     .information-card {
         padding: 5px;
+        margin-top: -120px;
+        height: calc( 100% + 120px )
     }
     .information-card__table__header--90px {
         width: initial;
