@@ -491,6 +491,9 @@
     vertical-align: top;
     border-top: 3px solid #dee2e6;
 }
+.information-card__table__header--90px {
+    width: 90px;
+}
 
 .tag {
     border-radius: 20px;
@@ -563,6 +566,12 @@
     }
     .filters__links {
         padding-top: 6px;
+    }
+    .information-card {
+        padding: 5px;
+    }
+    .information-card__table__header--90px {
+        width: initial;
     }
 }
 
