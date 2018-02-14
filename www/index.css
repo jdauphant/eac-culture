@@ -210,7 +210,11 @@
 }
 
 .galery__title {
-    margin: 0.5em;
+    margin: 0;
+    color: white;
+    background-color: #60ADD9;
+    padding: 8px;
+    font-size: 22px;
 }
 
 .galery__card {
