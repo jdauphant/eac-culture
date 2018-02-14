@@ -63,5 +63,5 @@ function generateCulturalActorsInformationCards() {
 
 /* Action EAC */
 function eacActionsForcultureId(cultureId){
-    return projetEAC.filter(e => e["fields"]["Acteurs Culturels"] != undefined && e["fields"]["Acteurs Culturels"].indexOf(cultureId) != -1);
+    return projectEAC.filter(e => e["fields"]["Acteurs Culturels"] != undefined && e["fields"]["Acteurs Culturels"].indexOf(cultureId) != -1);
 }
