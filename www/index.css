@@ -8,6 +8,7 @@
     height: calc(100% - 160px); 
     margin: 0; 
     padding: 0;
+    position: relative;
 }
 
 .filters {
@@ -422,4 +423,87 @@
     font-weight: bold;	
     line-height: 19px;	
     color: #0081CB;
+}
+
+.information-card {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    width: 50%;
+    height: 100%;    
+    overflow-x: hidden;
+    overflow-y: auto;
+    z-index: 600;
+    background-color: #F5F5F5;
+    padding: 2rem;
+    padding-top: 1rem;
+    box-sizing: border-box;
+}
+
+.information-card {
+    font-family: 'Nunito', sans-serif;
+}
+
+.information-card__title {
+    font-size: 30px;	
+    font-weight: bold;	
+    line-height: 33px;	
+    color: #0081CB;
+}
+
+.information-card__subtitle {
+    color: #0081CB;
+}
+
+.information-card__table {
+    width: 100%;
+}
+
+.information-card__table {
+    border-collapse: collapse;
+}
+
+.information-card__table thead th {
+    padding: .75rem;
+    color: #fff;
+    background-color: #0081CB;
+    border-color: #0081CB;
+    text-align: left;
+}
+.information-card__table tbody td {
+    padding: .75rem;
+    vertical-align: top;
+    border-top: 1px solid #dee2e6;
+}
+
+.information-card__table tfoot td {
+    padding: .75rem;
+    vertical-align: top;
+    border-top: 3px solid #dee2e6;
+}
+
+.tag {
+    border-radius: 20px;
+    background-color: #0081CB;
+    color: #fff;
+    padding: 5px 15px;
+    font-size: 15px;
+    font-weight: bold;
+    margin-right: 15px;
+}
+
+.information-card__close {
+    position: absolute;
+    top: 2rem;
+    right: 2rem;
+    border: none;
+    border-radius: 30px;
+    padding: 15px;
+    font-weight: bold;
+    background-color: grey;
+    color: white;
+}
+
+.invisible {
+    display: none;
 }

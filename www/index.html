@@ -78,6 +78,48 @@
         
     </div>
     <div class="main">
+        <div id="information-cards">
+            <div class="information-card invisible" id="info_template">
+                    <button class="information-card__close" onclick="closeInformation(this);">Fermer</button>
+                    <h2 class="information-card__title">Orchestre national d'Île-de-France</h2>
+                    <div class="information-card__tags">
+                        <span class="tag">Musique</span><span class="tag">Chorale</span>
+                    </div>
+                    <p class="information-card__description">Formation symphonique de notoriété internationale, l'Orchestre national d'Île-de-France propose une centaine de concerts par an. Sa mission : la diffusion du répertoire symphonique en Île-de-France.
+                    </p>
+                    <p class="information-card__infos">
+                        <b>Adresse :</b> 12 Rue de la Souche, 86000 Poitiers
+                    </p>
+                    <h3 class="information-card__subtitle">Liste des actions EAC</h3>
+                    <table class="information-card__table">
+                        <thead>
+                            <tr>
+                                <th>Nom de l'action</th>
+                                <th>Etablissement</th>
+                                <th>Total d'élèves</th>
+                            </tr>
+                        </thead>
+                        <tfoot>
+                            <tr>
+                                <td colspan="2">Total:</td> 
+                                <td class="information-card__table__students">45 élèves</td>
+                            </tr>
+                        </tfoot>
+                        <tbody class="information-card__table__actions">
+                            <tr>
+                                <td>Chorale</td>
+                                <td>Collègue Jardin des Plantes</td>
+                                <td>15 élèves</td>
+                            </tr>
+                            <tr>
+                                <td>Chorale</td>
+                                <td>Collègue Henry 4</td>
+                                <td>30 élèves</td>
+                            </tr>
+                        </tbody>
+                    </table>
+            </div>
+        </div>
         <div id="galery-template" style="display: none;">
             <div class="galery__card galery__card--clickable">
                 <div class="galery__card__image" style="background-image: url('images/icons/music-conductor-filled-50.png')"></div>
@@ -97,6 +139,7 @@
         <div id="map">
         </div>
     </div>
+    <script src="js/index.js"></script>
     <script>
 
         function favorite(sender) {
@@ -399,7 +442,7 @@
                         var cardId = "card_"+culture["id"];
                         var totalSchool = (new Set(culture["fields"]["Ecoles"])).size;
                         var popup = L.popup({ className: "map__popup"})
-                        .setContent("<span class='map__popup__title'>"+culture["fields"]["Nom"]+"</span><br><br>A effectués "+culture["fields"]["Total Action"]+" projets EAC avec "+totalSchool+" écoles"+" <br><br><button class='map__popup__button' onclick='showCard(\""+cardId+"\")'>Voir plus d'infos</button>");
+                        .setContent("<span class='map__popup__title'>"+culture["fields"]["Nom"]+"</span><br><br>A effectués "+culture["fields"]["Total Action"]+" projets EAC avec "+totalSchool+" écoles"+" <br><br><button class='map__popup__button' onclick='showInformation(\""+culture["id"]+"\")'>Voir plus d'infos</button>");
 
                     
                         popup.on('mouseover', function (e) {
@@ -471,6 +514,7 @@
                     }, Array.from([]));
                     
                     showSelectedSchoolLink();
+                    generateCulturalActorsInformationCards();
                 }
             );
         }
@@ -491,6 +535,7 @@
                 newCard.dataset.distance = distance;
                 newCard.dataset.types = acteur["fields"]["Type"];
                 newCard.id = "card_"+acteur["id"];
+                newCard.onclick = function () { showInformation(acteur["id"]); };
                 Array.from(newCard.children).forEach(function (child) {
                     if (child.className == "galery__card__image") {
                         var type = (acteur["fields"]["Type"] || [""])[0];
@@ -550,6 +595,8 @@
                 galery.innerHTML="<br><b>Pas de résultats</b>";
             }
         }
+
+  
 
         document.querySelectorAll("#filters input[type='checkbox']").forEach(
             input => 
