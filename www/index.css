@@ -209,6 +209,10 @@
     border-radius: 8px; 
 }
 
+.galery__title {
+    margin: 0.5em;
+}
+
 .galery__card {
     margin: 15px;
     padding: 0px;

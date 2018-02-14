@@ -166,7 +166,7 @@
         }).addTo(map);
 
 
-        var projectEAC = [];
+        var projetEAC = [];
         var links = [];
 
         var linksLayerGroup = L.layerGroup();
@@ -385,11 +385,7 @@
             }, 300);
         }
 
-
-        // ActeursCulturelles
-        var acteursCulturels = [];
-        function showCulture() {
-            cultureLayerGroup.clearLayers();
+        function filterActors(actor) {
             var actors = acteursCulturels;
             if(searchTerm.length > 2) {
                 actors = actors.filter(e => {
@@ -402,6 +398,14 @@
                    (acc, type) => acc || filteredTypes.indexOf(type) != -1 , false
                 ));
             }
+            return actors
+        }
+
+        // ActeursCulturelles
+        var acteursCulturels = [];
+        function showCulture() {
+            cultureLayerGroup.clearLayers();
+            var actors = filterActors(acteursCulturels);
             actors.forEach(function(culture) {
                 var lat = culture["fields"]["latitude"];
                 var lon = culture["fields"]["longitude"];
@@ -483,7 +487,6 @@
                     acteursCulturels = actorsTable["records"].sort((a,b) => b["fields"]["Total Action"] - a["fields"]["Total Action"]).filter(e => e["fields"]["latitude"] != undefined && e["fields"]["longitude"] != undefined);
                     updateActions();
                     showCulture();
-                    showActeurCulturel();
                 }
             );
         }
@@ -505,8 +508,8 @@
             getAirtableRecords("Actions").then(
                 actionsTable => {
                     console.log("Nb actions: "+actionsTable["records"].length);
-                    projetEAC = actionsTable["records"];
-                    links = projetEAC.reduce(
+                    projectEAC = actionsTable["records"];
+                    links = projectEAC.reduce(
                     (acc, action) =>  { 
                         if(action["fields"]["UAI"] != "" && action["fields"]["Acteurs Culturels"] != undefined) {  
                             return acc.concat(action["fields"]["Acteurs Culturels"].map(e => { return { school: action["fields"]["UAI"][0], culture: e} }));
@@ -515,6 +518,7 @@
                         } 
                     }, Array.from([]));
                     
+                    showActeurCulturel();
                     showSelectedSchoolLink();
                     generateCulturalActorsInformationCards();
                 }
@@ -531,7 +535,9 @@
         function showActeurCulturel() {
 			var card = document.getElementsByClassName("galery__card")[0];
             var latLngSchool = {lat: selectedSchool["fields"]["latitude"], lng: selectedSchool["fields"]["longitude"]};
-			var newCards = acteursCulturels.map(function (acteur) {
+
+            var actors = filterActors(acteursCulturels);
+			var newCards = actors.map(function (acteur) {
 				var newCard = card.cloneNode(true);
                 var latLngActeur = {lat: acteur["fields"]["latitude"], lng: acteur["fields"]["longitude"]};
                 var distance = Math.round(map.distance(latLngSchool, latLngActeur));
@@ -580,6 +586,7 @@
                 return newCard;
             });
             newCards = newCards.sort((a,b) => a.dataset.distance - b.dataset.distance);
+            /*
             if(searchTerm.length > 2) {
                 newCards = newCards.filter(e => e.innerText.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "").indexOf(searchTerm) != -1);
             }
@@ -588,9 +595,13 @@
                 newCards = newCards.filter(e => e.dataset.types.split(",").reduce(
                    (acc, type) => acc || filteredTypes.indexOf(type) != -1 , false
                 ));
-            }
+            } */
             var galery = document.getElementById("galery");
-            galery.innerHTML="<h2 class='gallery__titre'>Resultat: "+newCards.length+" acteurs culturels</h2>";
+            var ids = actors.map(e => e["id"]);
+            var countActionsEAC = projectEAC.filter(e => {
+                    return e["fields"]["Acteurs Culturels"] != undefined && e["fields"]["Acteurs Culturels"] .reduce((acc,a) => acc || ids.indexOf(a) != -1, false)
+            }).length;
+            galery.innerHTML="<h2 class='galery__title'>Resultat: "+newCards.length+" acteurs culturels et "+countActionsEAC+" actions EAC</h2>";
 			newCards.forEach(function (card) {
 				galery.appendChild(card);
 			});
