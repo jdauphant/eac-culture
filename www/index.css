@@ -442,7 +442,7 @@
     height: 100%;    
     overflow-x: hidden;
     overflow-y: auto;
-    z-index: 600;
+    z-index: 1500;
     background-color: #F5F5F5;
     padding: 2rem;
     padding-top: 1rem;
@@ -458,6 +458,7 @@
     font-weight: bold;	
     line-height: 33px;	
     color: #0081CB;
+    padding-right: 75px;
 }
 
 .information-card__subtitle {
@@ -525,4 +526,37 @@
           -ms-user-select: none; /* Internet Explorer/Edge */
               user-select: none; /* Non-prefixed version, currently
                                     supported by Chrome and Opera */
-  }
+}
+
+@media (max-width: 900px) {
+    .header__search {
+        display: none;
+    }
+}
+
+@media (max-width: 650px) {
+    #galery {
+        display: none;
+    }
+    .map {
+        width: 100%;
+    }
+    .information-card {
+        width: 100%;
+    }
+    .header {
+        height: 80px;
+    }
+}
+
+@media (max-width: 1200px) {
+    .main {
+        height: calc(100% - 203px);
+    }
+}
+
+@media (max-width: 650px) {
+    .main {
+        height: calc(100% - 250px);
+    }
+}
