@@ -34,7 +34,6 @@
 
 .filters__filter label {
     position: relative;
-	height: 36px;
 	border-radius: 5px;
     background-color: rgb(160, 153, 153);
 	font-family: Nunito;
@@ -61,9 +60,10 @@
 
 .filters__links {
     height: 36px;
-    padding: 10px;
     margin-left: 10px;
     float: left;
+    padding: 0px;
+    padding-top: 12px;
 }
 
 
@@ -545,7 +545,24 @@
         width: 100%;
     }
     .header {
-        height: 80px;
+        height: 60px;
+    }
+    .filters__filter {
+        margin: 3px;
+        margin-bottom: 12px;
+    }
+    .filters__filter label {
+        font-size: 10px;
+    }
+    .header__image {
+        height: 125px;
+        width: 125px;
+    }
+    .filters__filter:first-of-type {
+        margin-left: 160px;
+    }
+    .filters__links {
+        padding-top: 6px;
     }
 }
 
@@ -557,6 +574,6 @@
 
 @media (max-width: 650px) {
     .main {
-        height: calc(100% - 250px);
+        height: calc(100% - 150px);
     }
 }
