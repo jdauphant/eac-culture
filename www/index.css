@@ -574,6 +574,6 @@
 
 @media (max-width: 650px) {
     .main {
-        height: calc(100% - 150px);
+        height: calc(100% - 175px);
     }
 }
