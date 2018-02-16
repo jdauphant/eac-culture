@@ -159,15 +159,12 @@
             zoom: 15,
             minZoom: 3
         });
-        
-        L.tileLayer('https://{s}.tile.openstreetmap.se/hydda/full/{z}/{x}/{y}.png', {
-            maxZoom: 18,
-            attribution: 'Tiles courtesy of <a href="http://openstreetmap.se/" target="_blank">OpenStreetMap Sweden</a> &mdash; Map data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-        }).addTo(map);
-
+    
 
         var projetEAC = [];
         var links = [];
+        var searchTerm = "";
+        var acteursCulturels = [];
 
         var linksLayerGroup = L.layerGroup();
         linksLayerGroup.addTo(map);
@@ -199,10 +196,6 @@
                 }
             })
         }
-
-        map.on('zoomend', function() {
-            refreshIconsSize();
-        });
 
         function showLinksSchool(schoolUAI) {
             return function() {
@@ -365,15 +358,52 @@
             });
         }
         
-        getAirtableRecords("Etablissements").then(
+        var schoolsPromise = getAirtableRecords("Etablissements").then(
             schoolTable => {
                 console.log("Nb écoles: "+schoolTable["records"].length);
                 schools = schoolTable["records"];
                 selectedSchool = schools.filter(school => school["fields"]["numero_uai"] === "0860040B")[0];
-                updateActor();
-                showSchools();
             }
         )
+        schoolsPromise.then(value => showSchools());
+        var actorPromise = getAirtableRecords("Acteurs%20Culturels").then(
+                actorsTable => {
+                    console.log("Nb acteurs: "+actorsTable["records"].length);
+                    acteursCulturels = actorsTable["records"].sort((a,b) => b["fields"]["Total Action"] - a["fields"]["Total Action"]).filter(e => e["fields"]["latitude"] != undefined && e["fields"]["longitude"] != undefined);
+                }
+            );
+        actorPromise.then(value => showCulture());     
+        var eacActionsPromise = getAirtableRecords("Actions").then(
+            actionsTable => {
+                console.log("Nb actions: "+actionsTable["records"].length);
+                projectEAC = actionsTable["records"];
+                links = projectEAC.reduce(
+                (acc, action) =>  { 
+                    if(action["fields"]["UAI"] != "" && action["fields"]["Acteurs Culturels"] != undefined) {  
+                        return acc.concat(action["fields"]["Acteurs Culturels"].map(e => { return { school: action["fields"]["UAI"][0], culture: e} }));
+                    } else { 
+                        return acc;
+                    } 
+                }, Array.from([]));
+            }
+        );
+        Promise.all([schoolsPromise, actorPromise, eacActionsPromise]).then(
+            values => {
+                showActeurCulturel();
+                showSelectedSchoolLink();
+                generateCulturalActorsInformationCards();
+            }
+        )
+
+        L.tileLayer('https://{s}.tile.openstreetmap.se/hydda/full/{z}/{x}/{y}.png', {
+            maxZoom: 18,
+            attribution: 'Tiles courtesy of <a href="http://openstreetmap.se/" target="_blank">OpenStreetMap Sweden</a> &mdash; Map data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+        }).addTo(map);
+
+
+        map.on('zoomend', function() {
+            refreshIconsSize();
+        });
         
         function showCard(cardId) {
             var url = location.href;
@@ -402,7 +432,6 @@
         }
 
         // ActeursCulturelles
-        var acteursCulturels = [];
         function showCulture() {
             cultureLayerGroup.clearLayers();
             var actors = filterActors(acteursCulturels);
@@ -480,16 +509,7 @@
             });
         }
 
-        function updateActor() {
-            getAirtableRecords("Acteurs%20Culturels").then(
-                actorsTable => {
-                    console.log("Nb acteurs: "+actorsTable["records"].length);
-                    acteursCulturels = actorsTable["records"].sort((a,b) => b["fields"]["Total Action"] - a["fields"]["Total Action"]).filter(e => e["fields"]["latitude"] != undefined && e["fields"]["longitude"] != undefined);
-                    updateActions();
-                    showCulture();
-                }
-            );
-        }
+       
 
         
         function searchSchool(id) {
@@ -503,29 +523,7 @@
                 return element["id"] === id;
             })[0];
         }
-     
-        function updateActions() {
-            getAirtableRecords("Actions").then(
-                actionsTable => {
-                    console.log("Nb actions: "+actionsTable["records"].length);
-                    projectEAC = actionsTable["records"];
-                    links = projectEAC.reduce(
-                    (acc, action) =>  { 
-                        if(action["fields"]["UAI"] != "" && action["fields"]["Acteurs Culturels"] != undefined) {  
-                            return acc.concat(action["fields"]["Acteurs Culturels"].map(e => { return { school: action["fields"]["UAI"][0], culture: e} }));
-                        } else { 
-                            return acc;
-                        } 
-                    }, Array.from([]));
-                    
-                    showActeurCulturel();
-                    showSelectedSchoolLink();
-                    generateCulturalActorsInformationCards();
-                }
-            );
-        }
 
-        var searchTerm = "";
         function onSearch() {
             searchTerm = document.getElementById("search-input").value.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "");
             showActeurCulturel();
